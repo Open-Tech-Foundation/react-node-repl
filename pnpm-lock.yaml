@@ -23,6 +23,9 @@ dependencies:
   '@webcontainer/api':
     specifier: ^1.1.9
     version: 1.1.9
+  '@xterm/addon-fit':
+    specifier: 0.9.0-beta.1
+    version: 0.9.0-beta.1(xterm@5.4.0-beta.37)
   codemirror:
     specifier: ^6.0.1
     version: 6.0.1(@lezer/common@1.2.1)
@@ -33,8 +36,8 @@ dependencies:
     specifier: ^18.2.0
     version: 18.2.0(react@18.2.0)
   xterm:
-    specifier: ^5.3.0
-    version: 5.3.0
+    specifier: 5.4.0-beta.37
+    version: 5.4.0-beta.37
 
 devDependencies:
   '@types/react':
@@ -899,6 +902,14 @@ packages:
 
   /@webcontainer/api@1.1.9:
     resolution: {integrity: sha512-Sp6PV0K9D/3f8fSbCubqhfmBFH8XbngZCBOCF+aExyGqnz2etmw+KYvbQ/JxYvYX5KPaSxM+asFQwoP2RHl5cg==}
+    dev: false
+
+  /@xterm/addon-fit@0.9.0-beta.1(xterm@5.4.0-beta.37):
+    resolution: {integrity: sha512-HmGRUMMamUpQYuQBF2VP1LJ0xzqF85LMFfpaNu84t1Tsrl1lPKJWtqX9FDZ22Rf5q6bnKdbj44TRVAUHgDRbLA==}
+    peerDependencies:
+      xterm: ^5.0.0
+    dependencies:
+      xterm: 5.4.0-beta.37
     dev: false
 
   /acorn-jsx@5.3.2(acorn@8.11.3):
@@ -1798,8 +1809,8 @@ packages:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
     dev: true
 
-  /xterm@5.3.0:
-    resolution: {integrity: sha512-8QqjlekLUFTrU6x7xck1MsPzPA571K5zNqWm0M0oroYEWVOptZ0+ubQSkQ3uxIEhcIHRujJy6emDWX4A7qyFzg==}
+  /xterm@5.4.0-beta.37:
+    resolution: {integrity: sha512-ys+mXqLFrJc7khmYN/MgBnfLv38NgXfkwkEXsCZKHGqn3h2xUBvTvsrSEWO3NQeDPLj4zMr1RwqTblMK9St3BA==}
     dev: false
 
   /yallist@4.0.0:

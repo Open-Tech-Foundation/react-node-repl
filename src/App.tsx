@@ -5,7 +5,7 @@ function App() {
     <div>
       <h1>React Node REPL</h1>
       <div style={{ marginTop: "25px" }}>
-        <NodeREPL />
+        <NodeREPL style={{ height: "250px" }} />
       </div>
     </div>
   );

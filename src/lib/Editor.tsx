@@ -11,12 +11,12 @@ const Editor = forwardRef(function Editor(
   ref: MutableRefObject<EditorView | null>
 ) {
   const containerRef = useRef(null);
-  // const editorViewRef = useRef<EditorView | null>(null);
 
   useEffect(() => {
     if (containerRef.current && !ref?.current) {
       const minHeightEditor = EditorView.theme({
-        ".cm-content, .cm-gutter": { minHeight: "150px" },
+        ".cm-content, .cm-gutter": { minHeight: "100px" },
+        ".cm-focused": { outline: "none" },
       });
       ref.current = new EditorView({
         extensions: [
@@ -31,7 +31,17 @@ const Editor = forwardRef(function Editor(
     }
   }, []);
 
-  return <div ref={containerRef} />;
+  return (
+    <div
+      style={{
+        border: "1px solid lightgray",
+        height: "100%",
+        boxSizing: "border-box",
+        overflow: "auto",
+      }}
+      ref={containerRef}
+    />
+  );
 });
 
 export default Editor;

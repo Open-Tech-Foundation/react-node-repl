@@ -2,48 +2,14 @@ import { WebContainer } from "@webcontainer/api";
 import Editor from "./Editor";
 import { useEffect, useRef } from "react";
 import { EditorView } from "codemirror";
-import Terminal from "./Terminal";
-import PlayIcon from "./PlayIcon";
+import SplitPanel from "./SplitPanel";
+import LogsContainer from "./LogsContainer";
+import { Terminal as XTerm } from "xterm";
+import { files } from "./nodeFiles";
 
-const files = {
-  "index.js": {
-    file: {
-      contents: `'use strict';
-      const vm = require('node:vm');
-      const {readFileSync} = require('node:fs');
-      const code = readFileSync('./input.js');
-      global.require = require
-      const result = vm.runInThisContext(code); 
-      console.log(result)`,
-    },
-  },
-  "input.js": {
-    file: {
-      contents: "",
-    },
-  },
-  "package.json": {
-    file: {
-      contents: `
-{
-  "name": "react-node-repl",
-  "type": "commonjs",
-  "dependencies": {
-    "lodash": "latest",
-    "@opentf/cli-styles": "latest",
-    "@opentf/cli-pbar": "latest"
-  },
-  "scripts": {
-    "start": "node index.js"
-  }
-}`,
-    },
-  },
-};
-
-export default function NodeREPL() {
+export default function NodeREPL({ style }) {
   const editorViewRef = useRef<EditorView | null>(null);
-  const terminalRef = useRef(null);
+  const terminalRef = useRef<XTerm | null>(null);
   const webcontainerRef = useRef<WebContainer | null>(null);
 
   const runCmd = async (prog: string, args: string[]) => {
@@ -53,7 +19,9 @@ export default function NodeREPL() {
       runProcess.output.pipeTo(
         new WritableStream({
           write(data) {
-            terminalRef.current.write(data);
+            if (terminalRef.current) {
+              terminalRef.current.write(data);
+            }
           },
         })
       );
@@ -88,32 +56,22 @@ export default function NodeREPL() {
     }
   };
 
+  const handleClear = () => {
+    terminalRef.current?.write("\x1B[2J\x1B[3J\x1B[H");
+  };
+
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "50fr 50fr" }}>
-      <div style={{ position: "relative", border: '1px solid lightgray' }}>
-        <Editor ref={editorViewRef} />
-        <button
-          style={{
-            paddingRight: "12px",
-            backgroundColor: "#3e7a38",
-            color: "white",
-            fontWeight: "bold",
-            fontSize: "16px",
-            borderRadius: "5px",
-            display: "flex",
-            alignItems: "center",
-            position: "absolute",
-            bottom: "10px",
-            right: "10px",
-          }}
-          onClick={handleRun}
-        >
-          <PlayIcon /> Run
-        </button>
-      </div>
-      <div>
-        <Terminal ref={terminalRef} />
-      </div>
+    <div style={style}>
+      <SplitPanel
+        left={<Editor ref={editorViewRef} />}
+        right={
+          <LogsContainer
+            onRun={handleRun}
+            onClear={handleClear}
+            terminalRef={terminalRef}
+          />
+        }
+      />
     </div>
   );
 }
