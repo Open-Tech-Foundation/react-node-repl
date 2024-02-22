@@ -1,17 +1,20 @@
-import { forwardRef, useEffect, useRef } from "react";
+import { CSSProperties, forwardRef, useEffect, useRef } from "react";
 import { Terminal as XTerminal } from "xterm";
 import { FitAddon } from "@xterm/addon-fit";
 
-const Terminal = forwardRef(function Terminal(_props, ref) {
+type Props = {
+  style: CSSProperties;
+};
+
+const Terminal = forwardRef(function Terminal(props: Props, ref) {
   const terminalRef = useRef(null);
 
   useEffect(() => {
     if (terminalRef.current && ref?.current === null) {
       ref.current = new XTerminal({
         cursorBlink: true,
-        fontSize: 16,
+        fontSize: 15,
         lineHeight: 1.2,
-        // rows: 5,
       });
       const fitAddon = new FitAddon();
       ref.current.loadAddon(fitAddon);
@@ -22,7 +25,12 @@ const Terminal = forwardRef(function Terminal(_props, ref) {
 
   return (
     <div
-      style={{ height: "100%", paddingLeft: "8px", backgroundColor: "black" }}
+      style={{
+        ...props.style,
+        height: "100%",
+        paddingLeft: "8px",
+        backgroundColor: "black",
+      }}
       ref={terminalRef}
     ></div>
   );

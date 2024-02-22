@@ -5,6 +5,7 @@ import { keymap } from "@codemirror/view";
 import { indentWithTab } from "@codemirror/commands";
 import { javascript } from "@codemirror/lang-javascript";
 import { useEffect, useRef } from "react";
+import { files } from "./nodeFiles";
 
 const Editor = forwardRef(function Editor(
   props,
@@ -15,10 +16,10 @@ const Editor = forwardRef(function Editor(
   useEffect(() => {
     if (containerRef.current && !ref?.current) {
       const minHeightEditor = EditorView.theme({
-        ".cm-content, .cm-gutter": { minHeight: "100px" },
-        ".cm-focused": { outline: "none" },
+        ".cm-content, .cm-gutter": { minHeight: "150px" },
       });
       ref.current = new EditorView({
+        doc: files["input.js"].file.contents,
         extensions: [
           minHeightEditor,
           basicSetup,

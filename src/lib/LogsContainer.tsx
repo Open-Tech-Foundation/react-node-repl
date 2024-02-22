@@ -2,8 +2,19 @@ import ClearIcon from "./icons/ClearIcon";
 import PlayIcon from "./icons/PlayIcon";
 import Terminal from "./Terminal";
 import TerminalIcon from "./icons/Terminal";
+import { MutableRefObject, ReactNode, useState } from "react";
+import Console from "./Console";
 
-function LogsContainer({ onRun, onClear, terminalRef }) {
+type Props = {
+  onRun: () => void;
+  onClear: () => void;
+  terminalRef: MutableRefObject<ReactNode>;
+  logs: string[];
+};
+
+function LogsContainer({ onRun, onClear, terminalRef, logs }: Props) {
+  const [logView, setLogView] = useState("terminal");
+
   return (
     <div style={{ height: "100%" }}>
       <div
@@ -32,9 +43,11 @@ function LogsContainer({ onRun, onClear, terminalRef }) {
               backgroundColor: "inherit",
               marginLeft: "5px",
             }}
+            onChange={(e) => setLogView(e.target.value)}
+            value={logView}
           >
-            <option>Terminal</option>
-            <option>Console</option>
+            <option value="terminal">Terminal</option>
+            <option value="console">Console</option>
           </select>
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>
@@ -71,7 +84,11 @@ function LogsContainer({ onRun, onClear, terminalRef }) {
         </div>
       </div>
       <div style={{ height: "calc(100% - 35px)" }}>
-        <Terminal ref={terminalRef} />
+        <Terminal
+          ref={terminalRef}
+          style={{ display: `${logView === "terminal" ? "block" : "none"}` }}
+        />
+        {logView === "console" && <Console logs={logs} />}
       </div>
     </div>
   );
