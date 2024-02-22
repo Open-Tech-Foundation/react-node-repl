@@ -12,7 +12,7 @@ function App() {
     <div>
       <h1>React Node REPL</h1>
       <div style={{ marginTop: "25px" }}>
-        <NodeREPL deps={REPL_DEPS} style={{ height: "250px" }} />
+        <NodeREPL deps={REPL_DEPS} />
       </div>
     </div>
   );

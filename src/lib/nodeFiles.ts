@@ -27,7 +27,8 @@ process.stdout.write(out);`,
     file: {
       contents: `const { style } = require('@opentf/cli-styles')
 
-style('$g.bol{Hello World!}')`,
+style(\`$g.bol{Hello World 👋}
+$gr{-> Node.js \${process.version}}\`)`,
     },
   },
   "package.json": {

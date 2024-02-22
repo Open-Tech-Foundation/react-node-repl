@@ -1,27 +1,27 @@
-import { WebContainer } from "@webcontainer/api";
-import Editor from "./Editor";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { EditorView } from "codemirror";
+import { Terminal as XTerm } from "xterm";
+import Editor from "./Editor";
 import SplitPanel from "./SplitPanel";
 import LogsContainer from "./LogsContainer";
-import { Terminal as XTerm } from "xterm";
 import { files } from "./nodeFiles";
 import getDeps from "./utils/getDeps";
+import { setAppState, useAppState } from "./store";
 
 export type Props = {
   deps: string[];
-  style: CSSProperties;
+  style?: CSSProperties;
 };
 
 export default function NodeREPL({ deps, style }: Props) {
-  const [logs, setLogs] = useState([]);
-  const editorViewRef = useRef<EditorView | null>(null);
+  const [logs, setLogs] = useState<string[]>([]);
+  const editorRef = useRef<EditorView | null>(null);
   const terminalRef = useRef<XTerm | null>(null);
-  const webcontainerRef = useRef<WebContainer | null>(null);
+  const { webContainer, wcStatus } = useAppState((s) => s);
 
   const runCmd = async (prog: string, args: string[]) => {
-    if (webcontainerRef.current && terminalRef.current) {
-      const runProcess = await webcontainerRef.current.spawn(prog, [...args]);
+    if (webContainer && terminalRef.current) {
+      const runProcess = await webContainer.spawn(prog, [...args]);
       runProcess.output.pipeTo(
         new WritableStream({
           write(data) {
@@ -42,33 +42,35 @@ export default function NodeREPL({ deps, style }: Props) {
   };
 
   useEffect(() => {
-    const windowLoadHandler = async () => {
-      // Call only once
-      webcontainerRef.current = await WebContainer.boot();
+    const installPkgs = async () => {
+      setAppState((s) => ({ ...s, wcStatus: "Installing" }));
+      setTimeout(() => {}, 100);
       const pkgFile = JSON.parse(files["package.json"].file.contents);
       pkgFile.dependencies = getDeps(deps);
       files["package.json"].file.contents = JSON.stringify(pkgFile);
-      await webcontainerRef.current.mount(files);
-      runCmd("pnpm", ["install"]);
+      await webContainer.mount(files);
+      await runCmd("npm", ["install"]);
+      setAppState((s) => ({ ...s, wcStatus: "Ready" }));
     };
-    window.addEventListener("load", windowLoadHandler);
 
-    return () => {
-      window.removeEventListener("load", windowLoadHandler);
-    };
+    if (wcStatus === "Loaded") {
+      installPkgs();
+    }
   }, []);
 
   async function writeFile(path: string, content: string) {
-    if (webcontainerRef.current) {
-      await webcontainerRef.current.fs.writeFile(path, content);
+    if (webContainer) {
+      await webContainer.fs.writeFile(path, content);
     }
   }
 
   const handleRun = async () => {
-    if (editorViewRef.current && webcontainerRef.current) {
-      const doc = editorViewRef.current?.state.doc.toString();
+    if (editorRef.current && webContainer) {
+      setAppState((s) => ({ ...s, wcStatus: "Running" }));
+      const doc = editorRef.current?.state.doc.toString();
       await writeFile("/input.js", doc);
-      runCmd("node", ["index.js"]);
+      await runCmd("node", ["index.js"]);
+      setAppState((s) => ({ ...s, wcStatus: "Ready" }));
     }
   };
 
@@ -80,12 +82,12 @@ export default function NodeREPL({ deps, style }: Props) {
   return (
     <div style={style}>
       <SplitPanel
-        left={<Editor ref={editorViewRef} />}
+        left={<Editor ref={editorRef} />}
         right={
           <LogsContainer
             onRun={handleRun}
             onClear={handleClear}
-            terminalRef={terminalRef}
+            terminalRef={terminalRef as unknown as XTerm}
             logs={logs}
           />
         }

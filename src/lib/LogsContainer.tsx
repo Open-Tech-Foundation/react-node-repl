@@ -4,16 +4,34 @@ import Terminal from "./Terminal";
 import TerminalIcon from "./icons/Terminal";
 import { MutableRefObject, ReactNode, useState } from "react";
 import Console from "./Console";
+import { Terminal as XTerm } from "xterm";
+import { useAppState } from "./store";
 
 type Props = {
   onRun: () => void;
   onClear: () => void;
-  terminalRef: MutableRefObject<ReactNode>;
+  terminalRef: MutableRefObject<XTerm>;
   logs: string[];
 };
 
 function LogsContainer({ onRun, onClear, terminalRef, logs }: Props) {
   const [logView, setLogView] = useState("terminal");
+  const wcStatus = useAppState((s) => s.wcStatus);
+
+  const getRunBtn = () => {
+    switch (wcStatus) {
+      case "Installing":
+        return "Installing...";
+      case "Ready":
+        return (
+          <>
+            <PlayIcon /> Run
+          </>
+        );
+      case "Running":
+        return "Running...";
+    }
+  };
 
   return (
     <div style={{ height: "100%" }}>
@@ -65,8 +83,9 @@ function LogsContainer({ onRun, onClear, terminalRef, logs }: Props) {
               marginRight: "2px",
             }}
             onClick={onRun}
+            disabled={wcStatus !== "Ready"}
           >
-            <PlayIcon /> Run
+            {getRunBtn()}
           </button>
           <button
             title="Clear"
