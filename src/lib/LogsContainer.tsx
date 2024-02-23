@@ -6,15 +6,17 @@ import { MutableRefObject, ReactNode, useState } from "react";
 import Console from "./Console";
 import { Terminal as XTerm } from "xterm";
 import { useAppState } from "./store";
+import StopIcon from "./icons/Stop";
 
 type Props = {
   onRun: () => void;
+  onStop: () => void;
   onClear: () => void;
   terminalRef: MutableRefObject<XTerm>;
   logs: string[];
 };
 
-function LogsContainer({ onRun, onClear, terminalRef, logs }: Props) {
+function LogsContainer({ onRun, onClear, onStop, terminalRef, logs }: Props) {
   const [logView, setLogView] = useState("terminal");
   const wcStatus = useAppState((s) => s.wcStatus);
 
@@ -24,12 +26,43 @@ function LogsContainer({ onRun, onClear, terminalRef, logs }: Props) {
         return "Installing...";
       case "Ready":
         return (
-          <>
+          <button
+            title="CTRL + Enter"
+            style={{
+              paddingRight: "10px",
+              backgroundColor: "#3e7a38",
+              color: "white",
+              fontWeight: "bold",
+              borderRadius: "5px",
+              display: "flex",
+              alignItems: "center",
+              cursor: "pointer",
+              marginRight: "5px",
+            }}
+            onClick={onRun}
+            disabled={wcStatus !== "Ready"}
+          >
             <PlayIcon /> Run
-          </>
+          </button>
         );
       case "Running":
-        return "Running...";
+        return (
+          <button
+            title="Stop"
+            style={{
+              backgroundColor: "#FF4136",
+              color: "white",
+              fontWeight: "bold",
+              marginRight: "5px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+            }}
+            onClick={onStop}
+          >
+            <StopIcon /> <span style={{ marginLeft: "3px" }}>Stop</span>
+          </button>
+        );
     }
   };
 
@@ -69,24 +102,7 @@ function LogsContainer({ onRun, onClear, terminalRef, logs }: Props) {
           </select>
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <button
-            title="CTRL + Enter"
-            style={{
-              paddingRight: "10px",
-              backgroundColor: "#3e7a38",
-              color: "white",
-              fontWeight: "bold",
-              borderRadius: "5px",
-              display: "flex",
-              alignItems: "center",
-              cursor: "pointer",
-              marginRight: "2px",
-            }}
-            onClick={onRun}
-            disabled={wcStatus !== "Ready"}
-          >
-            {getRunBtn()}
-          </button>
+          {getRunBtn()}
           <button
             title="Clear"
             style={{

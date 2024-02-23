@@ -22,11 +22,12 @@ const baseLogStyles = {
 };
 
 export default function Console({ logs }: Props) {
-  const renderErrLog = (txt: string) => {
+  const renderErrLog = (txt: string, key: number) => {
     const [line1, ...otherLines] = txt.split("\n");
 
     return (
       <details
+        key={key}
         style={{
           ...baseLogStyles,
           color: "rgb(255, 128, 128)",
@@ -47,7 +48,7 @@ export default function Console({ logs }: Props) {
       const txt = stripAnsi(l);
 
       if (err) {
-        return renderErrLog(txt);
+        return renderErrLog(txt, i);
       }
 
       return (

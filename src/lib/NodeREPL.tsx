@@ -7,6 +7,7 @@ import LogsContainer from "./LogsContainer";
 import { files } from "./nodeFiles";
 import getDeps from "./utils/getDeps";
 import { setAppState, useAppState } from "./store";
+import { WebContainerProcess } from "@webcontainer/api";
 
 export type Props = {
   deps: string[];
@@ -17,12 +18,13 @@ export default function NodeREPL({ deps, style }: Props) {
   const [logs, setLogs] = useState<string[]>([]);
   const editorRef = useRef<EditorView | null>(null);
   const terminalRef = useRef<XTerm | null>(null);
+  const runProcessRef = useRef<WebContainerProcess | null>(null);
   const { webContainer, wcStatus } = useAppState((s) => s);
 
   const runCmd = async (prog: string, args: string[]) => {
     if (webContainer && terminalRef.current) {
-      const runProcess = await webContainer.spawn(prog, [...args]);
-      runProcess.output.pipeTo(
+      runProcessRef.current = await webContainer.spawn(prog, [...args]);
+      runProcessRef.current.output.pipeTo(
         new WritableStream({
           write(data) {
             if (terminalRef.current) {
@@ -33,12 +35,16 @@ export default function NodeREPL({ deps, style }: Props) {
         })
       );
 
-      const exitCode = await runProcess.exit;
+      const exitCode = await runProcessRef.current.exit;
 
       if (exitCode === 0) {
         terminalRef.current.write("\r\n");
       }
     }
+  };
+
+  const handleStop = async () => {
+    runProcessRef.current?.kill();
   };
 
   useEffect(() => {
@@ -85,6 +91,7 @@ export default function NodeREPL({ deps, style }: Props) {
         left={<Editor ref={editorRef} />}
         right={
           <LogsContainer
+            onStop={handleStop}
             onRun={handleRun}
             onClear={handleClear}
             terminalRef={terminalRef as unknown as XTerm}

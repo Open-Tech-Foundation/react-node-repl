@@ -6,6 +6,7 @@ import { indentWithTab } from "@codemirror/commands";
 import { javascript } from "@codemirror/lang-javascript";
 import { useEffect, useRef } from "react";
 import { files } from "./nodeFiles";
+import CodeIcon from "./icons/Code";
 
 const Editor = forwardRef(function Editor(
   props,
@@ -35,13 +36,35 @@ const Editor = forwardRef(function Editor(
   return (
     <div
       style={{
-        border: "1px solid lightgray",
         height: "100%",
         boxSizing: "border-box",
-        overflow: "auto",
       }}
-      ref={containerRef}
-    />
+    >
+      <div
+        style={{
+          backgroundColor: "#151515",
+          padding: "5px",
+          height: "25px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          color: "white",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <CodeIcon /> <span style={{ marginLeft: "5px" }}>main.js</span>
+        </div>
+      </div>
+      <div
+        style={{
+          border: "1px solid lightgray",
+          height: "calc(100% - 35px)",
+          boxSizing: "border-box",
+          overflowY: "auto",
+        }}
+        ref={containerRef}
+      />
+    </div>
   );
 });
 
