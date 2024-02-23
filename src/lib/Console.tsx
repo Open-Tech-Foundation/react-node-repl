@@ -8,34 +8,57 @@ function isError(str: string) {
   const errPattern = [
     "Error:",
     "SyntaxError:",
-    "TypeError:",
+    "TypeError",
     "ReferenceError:",
     "RangeError:",
   ];
   return errPattern.some((s) => str.startsWith(s));
 }
 
+const baseLogStyles = {
+  padding: "3px",
+  paddingLeft: "10px",
+  borderBottom: "1px solid rgb(44, 44, 44)",
+};
+
 export default function Console({ logs }: Props) {
+  const renderErrLog = (txt: string) => {
+    const [line1, ...otherLines] = txt.split("\n");
+
+    return (
+      <details
+        style={{
+          ...baseLogStyles,
+          color: "rgb(255, 128, 128)",
+          backgroundColor: "rgb(41, 0, 0)",
+          cursor: "pointer",
+        }}
+      >
+        <summary>{line1}</summary>
+        <pre style={{ margin: 0, whiteSpace: "pre-wrap", paddingLeft: "5px" }}>
+          {otherLines}
+        </pre>
+      </details>
+    );
+  };
   const renderLogs = () => {
     return logs.map((l, i) => {
       const err = isError(l);
       const txt = stripAnsi(l);
+
+      if (err) {
+        return renderErrLog(txt);
+      }
+
       return (
         <div
           key={i}
           style={{
-            color: err ? "rgb(255, 128, 128)" : "white",
-            padding: "3px",
-            paddingLeft: "10px",
-            borderBottom: "1px solid rgb(44, 44, 44)",
-            backgroundColor: err ? "rgb(41, 0, 0)" : "initial",
+            ...baseLogStyles,
+            color: "white",
           }}
         >
-          {err ? (
-            <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>{txt}</pre>
-          ) : (
-            txt
-          )}
+          {txt}
         </div>
       );
     });

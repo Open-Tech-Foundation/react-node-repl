@@ -12,8 +12,17 @@ function App() {
     <div>
       <h1>React Node REPL</h1>
       <div style={{ marginTop: "25px" }}>
-        <NodeREPL deps={REPL_DEPS} />
+        <NodeREPL deps={REPL_DEPS} style={{ height: "calc(100vh - 250px)" }} />
       </div>
+      <details>
+        <summary>
+          List of pre-installed npm packages
+        </summary>
+        <ul>
+          <li>lodash</li>
+          <li>@opentf/utils</li>
+        </ul>
+      </details>
     </div>
   );
 }
