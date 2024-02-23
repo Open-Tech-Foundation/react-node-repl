@@ -2,42 +2,42 @@ import ClearIcon from "./icons/ClearIcon";
 import PlayIcon from "./icons/PlayIcon";
 import Terminal from "./Terminal";
 import TerminalIcon from "./icons/Terminal";
-import { MutableRefObject, ReactNode, useState } from "react";
+import { useState } from "react";
 import Console from "./Console";
-import { Terminal as XTerm } from "xterm";
 import { useAppState } from "./store";
 import StopIcon from "./icons/Stop";
+import SpinnersRingResize from "./icons/SpinnersRingResize";
 
 type Props = {
   onRun: () => void;
   onStop: () => void;
   onClear: () => void;
-  terminalRef: MutableRefObject<XTerm>;
   logs: string[];
 };
 
-function LogsContainer({ onRun, onClear, onStop, terminalRef, logs }: Props) {
+function LogsContainer({ onRun, onClear, onStop, logs }: Props) {
   const [logView, setLogView] = useState("terminal");
   const wcStatus = useAppState((s) => s.wcStatus);
 
   const getRunBtn = () => {
+    const baseStyles = {
+      paddingRight: "10px",
+      color: "white",
+      fontWeight: "bold",
+      borderRadius: "5px",
+      display: "flex",
+      alignItems: "center",
+      cursor: "pointer",
+      marginRight: "5px",
+    };
     switch (wcStatus) {
-      case "Installing":
-        return "Installing...";
       case "Ready":
         return (
           <button
             title="CTRL + Enter"
             style={{
-              paddingRight: "10px",
+              ...baseStyles,
               backgroundColor: "#3e7a38",
-              color: "white",
-              fontWeight: "bold",
-              borderRadius: "5px",
-              display: "flex",
-              alignItems: "center",
-              cursor: "pointer",
-              marginRight: "5px",
             }}
             onClick={onRun}
             disabled={wcStatus !== "Ready"}
@@ -50,13 +50,8 @@ function LogsContainer({ onRun, onClear, onStop, terminalRef, logs }: Props) {
           <button
             title="Stop"
             style={{
+              ...baseStyles,
               backgroundColor: "#FF4136",
-              color: "white",
-              fontWeight: "bold",
-              marginRight: "5px",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
             }}
             onClick={onStop}
           >
@@ -118,12 +113,33 @@ function LogsContainer({ onRun, onClear, onStop, terminalRef, logs }: Props) {
           </button>
         </div>
       </div>
-      <div style={{ height: "calc(100% - 35px)" }}>
+      <div style={{ height: "calc(100% - 35px)", position: "relative" }}>
         <Terminal
-          ref={terminalRef}
-          style={{ display: `${logView === "terminal" ? "block" : "none"}` }}
+          style={{
+            display: `${logView === "terminal" ? "block" : "none"}`,
+          }}
         />
         {logView === "console" && <Console logs={logs} />}
+        <div
+          style={{
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%,-50%)",
+          }}
+        >
+          <div
+            style={{
+              display: wcStatus === "Booting" ? "flex" : "none",
+              alignItems: "center",
+            }}
+          >
+            <SpinnersRingResize stroke="#2ECC40" />
+            <span style={{ color: "white", marginLeft: "10px" }}>
+              Booting WebContainer
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );

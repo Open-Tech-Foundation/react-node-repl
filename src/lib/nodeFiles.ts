@@ -5,19 +5,31 @@ export const files = {
 let vm = require('node:vm');
 const {readFileSync} = require('node:fs');
 
+function replacer(key, value) {
+  if (typeof value === "function") {
+    return 'Function';
+  }
+
+  if (typeof value === "bigint") {
+    return \`\${value}n\`;
+  }
+
+  return value;
+}
+
 const code = readFileSync('./input.js');
 global.require = require;
 const result = vm.runInThisContext(code);
-vm = null
+vm = null;
 
-let out;
+let out; 
 
 if (typeof result === 'string') {
   out = result
 } else if (typeof result === 'undefined') {
   out = 'undefined'
 } else {
-  out = JSON.stringify(result, null, 2)
+  out = JSON.stringify(result, replacer, 2);
 }
 
 process.stdout.write(out);`,

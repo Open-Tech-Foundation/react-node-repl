@@ -1,33 +1,20 @@
-import { MutableRefObject, forwardRef } from "react";
-
 import { EditorView, basicSetup } from "codemirror";
 import { keymap } from "@codemirror/view";
 import { indentWithTab } from "@codemirror/commands";
 import { javascript } from "@codemirror/lang-javascript";
 import { useEffect, useRef } from "react";
 import { files } from "./nodeFiles";
-import CodeIcon from "./icons/Code";
+import { useAppState } from "./store";
 
-const Editor = forwardRef(function Editor(
-  props,
-  ref: MutableRefObject<EditorView | null>
-) {
+export default function Editor() {
   const containerRef = useRef(null);
+  const editorRef = useAppState((s) => s.editorRef);
 
   useEffect(() => {
-    if (containerRef.current && !ref?.current) {
-      const minHeightEditor = EditorView.theme({
-        ".cm-content, .cm-gutter": { minHeight: "150px" },
-      });
-      ref.current = new EditorView({
+    if (containerRef.current && editorRef.current === null) {
+      editorRef.current = new EditorView({
         doc: files["input.js"].file.contents,
-        extensions: [
-          minHeightEditor,
-          basicSetup,
-          keymap.of([indentWithTab]),
-          javascript(),
-        ],
-
+        extensions: [basicSetup, keymap.of([indentWithTab]), javascript()],
         parent: containerRef.current,
       });
     }
@@ -51,8 +38,36 @@ const Editor = forwardRef(function Editor(
           color: "white",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <CodeIcon /> <span style={{ marginLeft: "5px" }}>main.js</span>
+        <div
+          style={{ display: "flex", alignItems: "center", padding: "0 10px" }}
+        >
+          <div style={{ display: "flex", gap: "5px" }}>
+            <div
+              style={{
+                backgroundColor: "#ed695e",
+                borderRadius: "9999px",
+                height: ".75rem",
+                width: ".75rem",
+              }}
+            />
+            <div
+              style={{
+                backgroundColor: "#f4be4f",
+                borderRadius: "9999px",
+                height: ".75rem",
+                width: ".75rem",
+              }}
+            />
+            <div
+              style={{
+                backgroundColor: "#61c454",
+                borderRadius: "9999px",
+                height: ".75rem",
+                width: ".75rem",
+              }}
+            />
+          </div>
+          <span style={{ marginLeft: "15px" }}>main.js</span>
         </div>
       </div>
       <div
@@ -66,6 +81,4 @@ const Editor = forwardRef(function Editor(
       />
     </div>
   );
-});
-
-export default Editor;
+}

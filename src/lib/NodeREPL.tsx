@@ -1,6 +1,4 @@
 import { CSSProperties, useEffect, useRef, useState } from "react";
-import { EditorView } from "codemirror";
-import { Terminal as XTerm } from "xterm";
 import Editor from "./Editor";
 import SplitPanel from "./SplitPanel";
 import LogsContainer from "./LogsContainer";
@@ -8,6 +6,7 @@ import { files } from "./nodeFiles";
 import getDeps from "./utils/getDeps";
 import { setAppState, useAppState } from "./store";
 import { WebContainerProcess } from "@webcontainer/api";
+import { CLEAR_SCREEN_CMD, WC_STATUS } from "./constants";
 
 export type Props = {
   deps: string[];
@@ -16,21 +15,37 @@ export type Props = {
 
 export default function NodeREPL({ deps, style }: Props) {
   const [logs, setLogs] = useState<string[]>([]);
-  const editorRef = useRef<EditorView | null>(null);
-  const terminalRef = useRef<XTerm | null>(null);
   const runProcessRef = useRef<WebContainerProcess | null>(null);
-  const { webContainer, wcStatus } = useAppState((s) => s);
+  const { webContainer, wcStatus, wcSetup, terminalRef, editorRef } = useAppState(
+    (s) => s
+  );
+
+  useEffect(() => {
+    if (wcStatus === "Ready" && !wcSetup) {
+      installPkgs();
+    }
+  }, [wcStatus, wcSetup]);
+
+  const installPkgs = async () => {
+    setAppState({ wcStatus: "Installing" });
+    const pkgFile = JSON.parse(files["package.json"].file.contents);
+    pkgFile.dependencies = getDeps(deps);
+    files["package.json"].file.contents = JSON.stringify(pkgFile);
+    if (webContainer) {
+      await webContainer.mount(files);
+    }
+    await runCmd("npm", ["install"]);
+    setAppState({ wcStatus: WC_STATUS.READY, wcSetup: true });
+  };
 
   const runCmd = async (prog: string, args: string[]) => {
-    if (webContainer && terminalRef.current) {
+    if (webContainer && terminalRef) {
       runProcessRef.current = await webContainer.spawn(prog, [...args]);
       runProcessRef.current.output.pipeTo(
         new WritableStream({
           write(data) {
-            if (terminalRef.current) {
-              terminalRef.current.write(data);
-              setLogs((logs) => [...logs, data]);
-            }
+            terminalRef.current?.write(data);
+            setLogs((logs) => [...logs, data]);
           },
         })
       );
@@ -38,7 +53,7 @@ export default function NodeREPL({ deps, style }: Props) {
       const exitCode = await runProcessRef.current.exit;
 
       if (exitCode === 0) {
-        terminalRef.current.write("\r\n");
+        terminalRef.current?.write("\r\n");
       }
     }
   };
@@ -46,23 +61,6 @@ export default function NodeREPL({ deps, style }: Props) {
   const handleStop = async () => {
     runProcessRef.current?.kill();
   };
-
-  useEffect(() => {
-    const installPkgs = async () => {
-      setAppState((s) => ({ ...s, wcStatus: "Installing" }));
-      setTimeout(() => {}, 100);
-      const pkgFile = JSON.parse(files["package.json"].file.contents);
-      pkgFile.dependencies = getDeps(deps);
-      files["package.json"].file.contents = JSON.stringify(pkgFile);
-      await webContainer.mount(files);
-      await runCmd("npm", ["install"]);
-      setAppState((s) => ({ ...s, wcStatus: "Ready" }));
-    };
-
-    if (wcStatus === "Loaded") {
-      installPkgs();
-    }
-  }, []);
 
   async function writeFile(path: string, content: string) {
     if (webContainer) {
@@ -81,20 +79,21 @@ export default function NodeREPL({ deps, style }: Props) {
   };
 
   const handleClear = () => {
-    terminalRef.current?.write("\x1B[2J\x1B[3J\x1B[H");
+    if (terminalRef) {
+      terminalRef.current?.write(CLEAR_SCREEN_CMD);
+    }
     setLogs([]);
   };
 
   return (
     <div style={style}>
       <SplitPanel
-        left={<Editor ref={editorRef} />}
+        left={<Editor />}
         right={
           <LogsContainer
             onStop={handleStop}
             onRun={handleRun}
             onClear={handleClear}
-            terminalRef={terminalRef as unknown as XTerm}
             logs={logs}
           />
         }

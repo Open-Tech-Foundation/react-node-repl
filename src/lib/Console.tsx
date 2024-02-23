@@ -30,8 +30,8 @@ export default function Console({ logs }: Props) {
         key={key}
         style={{
           ...baseLogStyles,
-          color: "rgb(255, 128, 128)",
-          backgroundColor: "rgb(41, 0, 0)",
+          color: "#f7dcda",
+          backgroundColor: "#4e3534",
           cursor: "pointer",
         }}
       >

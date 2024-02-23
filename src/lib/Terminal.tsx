@@ -1,39 +1,40 @@
-import { CSSProperties, forwardRef, useEffect, useRef } from "react";
+import { CSSProperties, useEffect, useRef } from "react";
 import { Terminal as XTerminal } from "xterm";
 import { FitAddon } from "@xterm/addon-fit";
+import { setAppState, useAppState } from "./store";
 
 type Props = {
   style: CSSProperties;
 };
 
-const Terminal = forwardRef(function Terminal(props: Props, ref) {
-  const terminalRef = useRef(null);
+export default function Terminal({ style }: Props) {
+  const terminalContRef = useRef(null);
+  const terminalRef = useAppState((s) => s.terminalRef);
 
   useEffect(() => {
-    if (terminalRef.current && ref?.current === null) {
-      ref.current = new XTerminal({
+    if (terminalContRef.current && terminalRef.current === null) {
+      const terminal = new XTerminal({
         cursorBlink: true,
         fontSize: 15,
         lineHeight: 1.2,
       });
       const fitAddon = new FitAddon();
-      ref.current.loadAddon(fitAddon);
-      ref.current.open(terminalRef.current);
+      terminal.loadAddon(fitAddon);
+      terminal.open(terminalContRef.current);
       fitAddon.fit();
+      setAppState({ terminalRef: { current: terminal } });
     }
   }, []);
 
   return (
     <div
       style={{
-        ...props.style,
+        ...style,
         height: "100%",
         paddingLeft: "8px",
         backgroundColor: "black",
       }}
-      ref={terminalRef}
+      ref={terminalContRef}
     ></div>
   );
-});
-
-export default Terminal;
+}
