@@ -1,30 +1,65 @@
-# React + TypeScript + Vite
+<img align="left" src="https://open-tech-foundation.pages.dev/img/Logo.svg" width="50" height="50">
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+&nbsp;[OPEN TECH FOUNDATION](https://open-tech-foundation.pages.dev/)
 
-Currently, two official plugins are available:
+<div align="center">
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# React Node REPL
 
-## Expanding the ESLint configuration
+![Demo](./assets/Screenshot%20from%202024-02-24%2005-20-39.png)
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+</div>
 
-- Configure the top-level `parserOptions` property like this:
+> The Node.js REPL in a ReactJS component.
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+# [Live Demo](https://node-repl.pages.dev/)
+
+## Features
+
+- Simple API
+- Uses WebContainer from [https://webcontainers.io/](https://webcontainers.io/)
+- Choose between `Terminal` View or `Console` View
+- TypeScript support
+
+## Upcoming
+
+- Serialization of objects for better console view
+- Installing packages
+- Code formating
+- Syntax errors highlighting
+- TypeScript errors
+- Keyboard shortcuts
+
+## Installation
+
+```shell
+npm install @opentf/react-node-repl
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+```shell
+yarn add @opentf/react-node-repl
+```
+
+```shell
+pnpm add @opentf/react-node-repl
+```
+
+```shell
+bun add @opentf/react-node-repl
+```
+
+## Usage
+
+```jsx
+import { NodeREPL } from "@opentf/react-node-repl";
+
+<NodeREPL deps={[]} style={{ height: "50vh" }} />;
+```
+
+## API
+
+WIP
+
+## License
+
+Copyright (c) 2021, [Thanga Ganapathy](https://github.com/Thanga-Ganapathy) ([MIT License](./LICENSE)).
