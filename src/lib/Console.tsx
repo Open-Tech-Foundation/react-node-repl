@@ -73,6 +73,7 @@ export default function Console({ logs }: Props) {
         backgroundColor: "#242424",
         padding: "10px",
         boxSizing: "border-box",
+        wordBreak: "break-word",
       }}
     >
       {renderLogs()}

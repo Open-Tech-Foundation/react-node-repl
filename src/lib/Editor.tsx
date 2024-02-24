@@ -25,6 +25,7 @@ export default function Editor() {
       style={{
         height: "100%",
         boxSizing: "border-box",
+        borderRight: "1px solid lightgray",
       }}
     >
       <div

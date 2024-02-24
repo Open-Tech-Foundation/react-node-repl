@@ -19,6 +19,7 @@ function replacer(key, value) {
 
 const code = readFileSync('./input.js');
 global.require = require;
+global.log = console.log;
 const result = vm.runInThisContext(code);
 vm = null;
 

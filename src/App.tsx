@@ -16,11 +16,12 @@ function App() {
           justifyContent: "space-between",
           alignItems: "center",
           padding: "0px 15px",
+          height: "50px",
         }}
       >
         <div style={{ display: "flex", alignItems: "center" }}>
           <img src="/Logo.svg" alt="Logo" height={35} />
-          <h1>React Node REPL</h1>
+          <h3 style={{ marginLeft: "10px" }}>React Node REPL</h3>
         </div>
         <div>
           <a href="https://github.com/Open-Tech-Foundation/react-node-repl">
@@ -28,17 +29,16 @@ function App() {
           </a>
         </div>
       </header>
-      <main style={{ padding: "50px" }}>
-        <NodeREPL deps={REPL_DEPS} style={{ height: "50vh" }} />
+      <hr />
+      <main
+        style={{
+          padding: "50px",
+          minHeight: "calc(100vh - 118px)",
+          boxSizing: "border-box",
+        }}
+      >
+        <NodeREPL deps={REPL_DEPS} style={{ height: "300px" }} />
         <div style={{ marginTop: "25px" }}>
-          <details>
-            <summary>List of pre-installed npm packages</summary>
-            <ul>
-              {REPL_DEPS.map((p, i) => (
-                <li key={i}>{p}</li>
-              ))}
-            </ul>
-          </details>
         </div>
       </main>
       <footer
@@ -47,6 +47,8 @@ function App() {
           color: "white",
           padding: "15px",
           textAlign: "center",
+          height: "50px",
+          boxSizing: "border-box",
         }}
       >
         Copyright © {new Date().getFullYear()}{" "}

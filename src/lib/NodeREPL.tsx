@@ -6,7 +6,8 @@ import { files } from "./nodeFiles";
 import getDeps from "./utils/getDeps";
 import { setAppState, useAppState } from "./store";
 import { WebContainerProcess } from "@webcontainer/api";
-import { CLEAR_SCREEN_CMD, WC_STATUS } from "./constants";
+import { NODE_INPUT_FILE, NODE_MAIN_FILE, WC_STATUS } from "./constants";
+import { WcStatus } from "./types";
 
 export type Props = {
   deps: string[];
@@ -16,9 +17,8 @@ export type Props = {
 export default function NodeREPL({ deps, style }: Props) {
   const [logs, setLogs] = useState<string[]>([]);
   const runProcessRef = useRef<WebContainerProcess | null>(null);
-  const { webContainer, wcStatus, wcSetup, terminalRef, editorRef } = useAppState(
-    (s) => s
-  );
+  const { webContainer, wcStatus, wcSetup, terminalRef, editorRef } =
+    useAppState((s) => s);
 
   useEffect(() => {
     if (wcStatus === "Ready" && !wcSetup) {
@@ -27,7 +27,7 @@ export default function NodeREPL({ deps, style }: Props) {
   }, [wcStatus, wcSetup]);
 
   const installPkgs = async () => {
-    setAppState({ wcStatus: "Installing" });
+    setAppState({ wcStatus: WC_STATUS.INSTALLING as WcStatus });
     const pkgFile = JSON.parse(files["package.json"].file.contents);
     pkgFile.dependencies = getDeps(deps);
     files["package.json"].file.contents = JSON.stringify(pkgFile);
@@ -35,7 +35,7 @@ export default function NodeREPL({ deps, style }: Props) {
       await webContainer.mount(files);
     }
     await runCmd("npm", ["install"]);
-    setAppState({ wcStatus: WC_STATUS.READY, wcSetup: true });
+    setAppState({ wcStatus: WC_STATUS.READY as WcStatus, wcSetup: true });
   };
 
   const runCmd = async (prog: string, args: string[]) => {
@@ -53,7 +53,8 @@ export default function NodeREPL({ deps, style }: Props) {
       const exitCode = await runProcessRef.current.exit;
 
       if (exitCode === 0) {
-        terminalRef.current?.write("\r\n");
+        terminalRef.current?.writeln("");
+        terminalRef.current?.write("$ ");
       }
     }
   };
@@ -70,17 +71,17 @@ export default function NodeREPL({ deps, style }: Props) {
 
   const handleRun = async () => {
     if (editorRef.current && webContainer) {
-      setAppState((s) => ({ ...s, wcStatus: "Running" }));
+      setAppState((s) => ({ ...s, wcStatus: WC_STATUS.RUNNING as WcStatus }));
       const doc = editorRef.current?.state.doc.toString();
-      await writeFile("/input.js", doc);
-      await runCmd("node", ["index.js"]);
-      setAppState((s) => ({ ...s, wcStatus: "Ready" }));
+      await writeFile(NODE_INPUT_FILE, doc);
+      await runCmd("node", [NODE_MAIN_FILE]);
+      setAppState((s) => ({ ...s, wcStatus: WC_STATUS.READY as WcStatus }));
     }
   };
 
   const handleClear = () => {
     if (terminalRef) {
-      terminalRef.current?.write(CLEAR_SCREEN_CMD);
+      terminalRef.current?.clear();
     }
     setLogs([]);
   };

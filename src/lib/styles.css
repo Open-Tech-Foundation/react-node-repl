@@ -1,0 +1,11 @@
+.xterm {
+  height: 100%;
+}
+
+.xterm .xterm-viewport {
+  overflow-y: auto;
+}
+
+.cm-editor {
+  height: 100%;
+}

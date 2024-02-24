@@ -42,7 +42,7 @@ function LogsContainer({ onRun, onClear, onStop, logs }: Props) {
             onClick={onRun}
             disabled={wcStatus !== "Ready"}
           >
-            <PlayIcon /> Run
+            <PlayIcon /> <span style={{ marginLeft: "5px" }}>Run</span>
           </button>
         );
       case "Running":
@@ -95,22 +95,21 @@ function LogsContainer({ onRun, onClear, onStop, logs }: Props) {
             <option value="terminal">Terminal</option>
             <option value="console">Console</option>
           </select>
-        </div>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          {getRunBtn()}
           <button
             title="Clear"
             style={{
-              fontWeight: "bold",
-              borderRadius: "5px",
               cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
+              border: 0,
+              background: "inherit",
+              marginLeft: "10px",
             }}
             onClick={onClear}
           >
-            <ClearIcon />
+            <ClearIcon fill="#c7c7c7" width={20} height={20} />
           </button>
+        </div>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          {getRunBtn()}
         </div>
       </div>
       <div style={{ height: "calc(100% - 35px)", position: "relative" }}>
