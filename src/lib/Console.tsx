@@ -1,8 +1,5 @@
 import stripAnsi from "strip-ansi";
-
-type Props = {
-  logs: string[];
-};
+import { useAppState } from "./store";
 
 function isError(str: string) {
   const errPattern = [
@@ -21,7 +18,8 @@ const baseLogStyles = {
   borderBottom: "1px solid rgb(44, 44, 44)",
 };
 
-export default function Console({ logs }: Props) {
+export default function Console() {
+  const logs = useAppState((s) => s.logs);
   const renderErrLog = (txt: string, key: number) => {
     const [line1, ...otherLines] = txt.split("\n");
 

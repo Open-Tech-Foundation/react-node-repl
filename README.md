@@ -10,7 +10,7 @@
 
 </div>
 
-> The Node.js REPL in a ReactJS component.
+> The Node.js REPL in a React component.
 
 # [Live Demo](https://node-repl.pages.dev/)
 
@@ -18,13 +18,12 @@
 
 - Simple API
 - Uses WebContainer from [https://webcontainers.io/](https://webcontainers.io/)
-- Choose between `Terminal` View or `Console` View
+- Switch between `Terminal` or `Console` View
 - TypeScript support
 
 ## Upcoming
 
 - Serialization of objects for better console view
-- Installing packages
 - Code formating
 - Syntax errors highlighting
 - TypeScript errors

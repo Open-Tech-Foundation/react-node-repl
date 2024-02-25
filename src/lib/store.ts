@@ -11,6 +11,7 @@ type State = {
   terminalRef: { current: Terminal | null };
   editorRef: { current: EditorView | null };
   wcSetup: boolean;
+  logs: string[];
 };
 
 const [useAppState, setAppState, api] = create<State>({
@@ -19,6 +20,7 @@ const [useAppState, setAppState, api] = create<State>({
   terminalRef: { current: null },
   editorRef: { current: null },
   wcSetup: false,
+  logs: [],
 });
 
 window.addEventListener("load", async () => {

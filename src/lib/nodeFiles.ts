@@ -14,10 +14,14 @@ function replacer(key, value) {
     return \`\${value}n\`;
   }
 
+  if (typeof value === 'number' && value === Number.POSITIVE_INFINITY) {
+    return 'Infinity';
+  }
+
   return value;
 }
 
-const code = readFileSync('./input.js');
+const code = readFileSync('./main.js');
 global.require = require;
 global.log = console.log;
 const result = vm.runInThisContext(code);
@@ -36,7 +40,7 @@ if (typeof result === 'string') {
 process.stdout.write(out);`,
     },
   },
-  "input.js": {
+  "main.js": {
     file: {
       contents: `const { style } = require('@opentf/cli-styles')
 

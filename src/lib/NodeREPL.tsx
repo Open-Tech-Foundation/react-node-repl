@@ -1,4 +1,4 @@
-import { CSSProperties, useEffect, useRef, useState } from "react";
+import { CSSProperties, useEffect, useRef } from "react";
 import Editor from "./Editor";
 import SplitPanel from "./SplitPanel";
 import LogsContainer from "./LogsContainer";
@@ -6,7 +6,7 @@ import { files } from "./nodeFiles";
 import getDeps from "./utils/getDeps";
 import { setAppState, useAppState } from "./store";
 import { WebContainerProcess } from "@webcontainer/api";
-import { NODE_INPUT_FILE, NODE_MAIN_FILE, WC_STATUS } from "./constants";
+import { NODE_INDEX_FILE, NODE_MAIN_FILE, WC_STATUS } from "./constants";
 import { WcStatus } from "./types";
 
 export type Props = {
@@ -15,8 +15,6 @@ export type Props = {
 };
 
 export default function NodeREPL({ deps, style }: Props) {
-  const userCmdRef = useRef<string>("");
-  const [logs, setLogs] = useState<string[]>([]);
   const runProcessRef = useRef<WebContainerProcess | null>(null);
   const { webContainer, wcStatus, wcSetup, terminalRef, editorRef } =
     useAppState((s) => s);
@@ -26,22 +24,6 @@ export default function NodeREPL({ deps, style }: Props) {
       installPkgs();
     }
   }, [wcStatus, wcSetup]);
-
-  useEffect(() => {
-    if (webContainer && terminalRef.current) {
-      terminalRef.current.onData((data: string) => {
-        terminalRef.current?.write(data);
-        userCmdRef.current += data;
-      });
-      terminalRef.current.onKey(async ({ key }: { key: string }) => {
-        if (key.charCodeAt(0) === 13) {
-          const [prog, ...args] = userCmdRef.current.split(" ");
-          await runCmd(prog, args);
-          userCmdRef.current = "";
-        }
-      });
-    }
-  }, [webContainer, terminalRef.current]);
 
   const installPkgs = async () => {
     setAppState({ wcStatus: WC_STATUS.INSTALLING as WcStatus });
@@ -59,12 +41,12 @@ export default function NodeREPL({ deps, style }: Props) {
     terminalRef.current?.writeln("");
 
     if (webContainer && terminalRef) {
-      runProcessRef.current = await webContainer.spawn(prog, [...args], {});
+      runProcessRef.current = await webContainer.spawn(prog, [...args]);
       runProcessRef.current.output.pipeTo(
         new WritableStream({
           write(data) {
             terminalRef.current?.write(data);
-            setLogs((logs) => [...logs, data]);
+            setAppState((s) => ({ logs: [...s.logs, data] }));
           },
         })
       );
@@ -90,8 +72,8 @@ export default function NodeREPL({ deps, style }: Props) {
     if (editorRef.current && webContainer) {
       setAppState((s) => ({ ...s, wcStatus: WC_STATUS.RUNNING as WcStatus }));
       const doc = editorRef.current?.state.doc.toString();
-      await writeFile(NODE_INPUT_FILE, doc);
-      await runCmd("node", [NODE_MAIN_FILE]);
+      await writeFile(NODE_MAIN_FILE, doc);
+      await runCmd("node", [NODE_INDEX_FILE]);
       setAppState((s) => ({ ...s, wcStatus: WC_STATUS.READY as WcStatus }));
     }
   };
@@ -100,7 +82,7 @@ export default function NodeREPL({ deps, style }: Props) {
     if (terminalRef) {
       terminalRef.current?.clear();
     }
-    setLogs([]);
+    setAppState({ logs: [], userCmd: "" });
   };
 
   return (
@@ -112,7 +94,7 @@ export default function NodeREPL({ deps, style }: Props) {
             onStop={handleStop}
             onRun={handleRun}
             onClear={handleClear}
-            logs={logs}
+            runCmd={runCmd}
           />
         }
       />

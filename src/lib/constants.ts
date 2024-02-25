@@ -8,6 +8,8 @@ export const WC_STATUS = {
   RUNNING: "Running",
 };
 
-export const NODE_INPUT_FILE = "/input.js";
+export const NODE_MAIN_FILE = "main.js";
 
-export const NODE_MAIN_FILE = "index.js";
+export const NODE_INDEX_FILE = "index.js";
+
+export const BACKSPACE_CODE = "\b \b";

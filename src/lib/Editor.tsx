@@ -5,6 +5,7 @@ import { javascript } from "@codemirror/lang-javascript";
 import { useEffect, useRef } from "react";
 import { files } from "./nodeFiles";
 import { useAppState } from "./store";
+import { NODE_MAIN_FILE } from "./constants";
 
 export default function Editor() {
   const containerRef = useRef(null);
@@ -13,7 +14,7 @@ export default function Editor() {
   useEffect(() => {
     if (containerRef.current && editorRef.current === null) {
       editorRef.current = new EditorView({
-        doc: files["input.js"].file.contents,
+        doc: files[NODE_MAIN_FILE].file.contents,
         extensions: [basicSetup, keymap.of([indentWithTab]), javascript()],
         parent: containerRef.current,
       });
