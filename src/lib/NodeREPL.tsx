@@ -15,6 +15,7 @@ export type Props = {
 };
 
 export default function NodeREPL({ deps, style }: Props) {
+  const userCmdRef = useRef<string>("");
   const [logs, setLogs] = useState<string[]>([]);
   const runProcessRef = useRef<WebContainerProcess | null>(null);
   const { webContainer, wcStatus, wcSetup, terminalRef, editorRef } =
@@ -25,6 +26,22 @@ export default function NodeREPL({ deps, style }: Props) {
       installPkgs();
     }
   }, [wcStatus, wcSetup]);
+
+  useEffect(() => {
+    if (webContainer && terminalRef.current) {
+      terminalRef.current.onData((data: string) => {
+        terminalRef.current?.write(data);
+        userCmdRef.current += data;
+      });
+      terminalRef.current.onKey(async ({ key }: { key: string }) => {
+        if (key.charCodeAt(0) === 13) {
+          const [prog, ...args] = userCmdRef.current.split(" ");
+          await runCmd(prog, args);
+          userCmdRef.current = "";
+        }
+      });
+    }
+  }, [webContainer, terminalRef.current]);
 
   const installPkgs = async () => {
     setAppState({ wcStatus: WC_STATUS.INSTALLING as WcStatus });
@@ -39,8 +56,10 @@ export default function NodeREPL({ deps, style }: Props) {
   };
 
   const runCmd = async (prog: string, args: string[]) => {
+    terminalRef.current?.writeln("");
+
     if (webContainer && terminalRef) {
-      runProcessRef.current = await webContainer.spawn(prog, [...args]);
+      runProcessRef.current = await webContainer.spawn(prog, [...args], {});
       runProcessRef.current.output.pipeTo(
         new WritableStream({
           write(data) {
@@ -50,12 +69,10 @@ export default function NodeREPL({ deps, style }: Props) {
         })
       );
 
-      const exitCode = await runProcessRef.current.exit;
-
-      if (exitCode === 0) {
-        terminalRef.current?.writeln("");
-        terminalRef.current?.write("$ ");
-      }
+      await runProcessRef.current.exit;
+      terminalRef.current?.writeln("");
+      terminalRef.current?.write("$ ");
+      runProcessRef.current = null;
     }
   };
 

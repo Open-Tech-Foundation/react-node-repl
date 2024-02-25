@@ -1,3 +1,8 @@
+import { Alert, Box, Button, Divider, Link, Typography } from "@mui/joy";
+import WarningIcon from "@mui/icons-material/Warning";
+import InfoIcon from "@mui/icons-material/Info";
+import Launch from "@mui/icons-material/Launch";
+
 import { NodeREPL } from "./lib";
 
 const REPL_DEPS = [
@@ -21,24 +26,68 @@ function App() {
       >
         <div style={{ display: "flex", alignItems: "center" }}>
           <img src="/Logo.svg" alt="Logo" height={35} />
-          <h3 style={{ marginLeft: "10px" }}>React Node REPL</h3>
+          <Typography level="h3" sx={{ ml: 2 }}>
+            React Node REPL
+          </Typography>
         </div>
         <div>
-          <a href="https://github.com/Open-Tech-Foundation/react-node-repl">
+          <Link
+            href="https://github.com/Open-Tech-Foundation/react-node-repl"
+            endDecorator={<Launch fontSize="inherit" />}
+            target="_blank"
+            rel="noopener"
+            fontSize="sm"
+          >
             Github
-          </a>
+          </Link>
         </div>
       </header>
-      <hr />
+      <Divider orientation="horizontal" />
       <main
         style={{
-          padding: "50px",
-          minHeight: "calc(100vh - 118px)",
+          padding: "25px",
+          minHeight: "100vh",
           boxSizing: "border-box",
         }}
       >
-        <NodeREPL deps={REPL_DEPS} style={{ height: "300px" }} />
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Alert sx={{ mb: 2 }} color="success">
+            <Typography level="body-lg">
+              The Node.js REPL in a React component.
+            </Typography>
+            <Button variant="solid" size="md">
+              Get Started
+            </Button>
+          </Alert>
+        </Box>
+        <NodeREPL deps={REPL_DEPS} style={{ height: "calc(50vh)" }} />
         <div style={{ marginTop: "25px" }}>
+          <Alert
+            variant="soft"
+            color="warning"
+            startDecorator={<WarningIcon />}
+          >
+            Currently it does not support importing modules using `import`
+            statements. Fallback to `require`.
+          </Alert>
+
+          <Alert
+            startDecorator={<InfoIcon />}
+            variant="soft"
+            color="primary"
+            sx={{ mt: 2 }}
+          >
+            <ul>
+              <li>You can directly install npm packages in the terminal.</li>
+              <li>You can use log() instead of console.log().</li>
+            </ul>
+          </Alert>
         </div>
       </main>
       <footer
