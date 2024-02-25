@@ -5,21 +5,52 @@ import { javascript } from "@codemirror/lang-javascript";
 import { useEffect, useRef } from "react";
 import { files } from "./nodeFiles";
 import { useAppState } from "./store";
-import { NODE_MAIN_FILE } from "./constants";
+import { NODE_MAIN_FILE, WC_STATUS } from "./constants";
+import { Prec } from "@codemirror/state";
 
-export default function Editor() {
+type Props = {
+  onRun: () => void;
+};
+
+export default function Editor({ onRun }: Props) {
   const containerRef = useRef(null);
-  const editorRef = useAppState((s) => s.editorRef);
+  const { editorRef, wcStatus, wcSetup } = useAppState((s) => ({
+    editorRef: s.editorRef,
+    wcStatus: s.wcStatus,
+    wcSetup: s.wcSetup,
+  }));
+  const handleRun = () => {
+    onRun();
+    return true;
+  };
 
   useEffect(() => {
-    if (containerRef.current && editorRef.current === null) {
+    if (
+      wcSetup &&
+      wcStatus === WC_STATUS.READY &&
+      containerRef.current &&
+      editorRef.current === null
+    ) {
+      const runCmdExt = Prec.highest(
+        keymap.of([
+          {
+            key: "Ctrl-Enter",
+            run: handleRun,
+          },
+        ])
+      );
       editorRef.current = new EditorView({
         doc: files[NODE_MAIN_FILE].file.contents,
-        extensions: [basicSetup, keymap.of([indentWithTab]), javascript()],
+        extensions: [
+          basicSetup,
+          runCmdExt,
+          keymap.of([indentWithTab]),
+          javascript(),
+        ],
         parent: containerRef.current,
       });
     }
-  }, []);
+  }, [wcStatus, wcSetup]);
 
   return (
     <div

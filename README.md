@@ -6,7 +6,7 @@
 
 # React Node REPL
 
-![Demo](./assets/Screenshot%20from%202024-02-24%2005-20-39.png)
+![Demo](./assets/Demo.png)
 
 </div>
 
@@ -17,7 +17,7 @@
 ## Features
 
 - Simple API
-- Uses WebContainer from [https://webcontainers.io/](https://webcontainers.io/)
+- Powered by [WebContainer](https://webcontainers.io/)
 - Switch between `Terminal` or `Console` View
 - TypeScript support
 
@@ -52,7 +52,7 @@ bun add @opentf/react-node-repl
 ```jsx
 import { NodeREPL } from "@opentf/react-node-repl";
 
-<NodeREPL deps={[]} style={{ height: "50vh" }} />;
+<NodeREPL deps={[]} style={{ height: "50vh" }} />
 ```
 
 ## API

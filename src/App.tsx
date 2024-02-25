@@ -13,6 +13,14 @@ const REPL_DEPS = [
 ];
 
 function App() {
+  const code = `const { style } = require('@opentf/cli-styles')
+
+style(\`$g.bol{Hello World 👋}
+  $gr{-> Node.js \${process.version}}\`)`;
+
+  const setupCode = `const _ = require('lodash');
+const log = console.log;`;
+
   return (
     <div>
       <header
@@ -66,7 +74,12 @@ function App() {
             </Button>
           </Alert>
         </Box>
-        <NodeREPL deps={REPL_DEPS} style={{ height: "calc(50vh)" }} />
+        <NodeREPL
+          code={code}
+          setupCode={setupCode}
+          deps={REPL_DEPS}
+          style={{ height: "calc(50vh)" }}
+        />
         <div style={{ marginTop: "25px" }}>
           <Alert
             variant="soft"

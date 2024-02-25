@@ -21,9 +21,10 @@ function replacer(key, value) {
   return value;
 }
 
-const code = readFileSync('./main.js');
 global.require = require;
-global.log = console.log;
+const setupCode = readFileSync('./setup.js');
+const mainCode = readFileSync('./main.js');
+const code = setupCode + '\\n' + mainCode;
 const result = vm.runInThisContext(code);
 vm = null;
 
@@ -42,10 +43,12 @@ process.stdout.write(out);`,
   },
   "main.js": {
     file: {
-      contents: `const { style } = require('@opentf/cli-styles')
-
-style(\`$g.bol{Hello World 👋}
-$gr{-> Node.js \${process.version}}\`)`,
+      contents: "",
+    },
+  },
+  "setup.js": {
+    file: {
+      contents: "",
     },
   },
   "package.json": {

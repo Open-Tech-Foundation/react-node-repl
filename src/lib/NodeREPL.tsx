@@ -10,28 +10,35 @@ import { NODE_INDEX_FILE, NODE_MAIN_FILE, WC_STATUS } from "./constants";
 import { WcStatus } from "./types";
 
 export type Props = {
-  deps: string[];
+  code?: string;
+  deps?: string[];
+  setupCode?: string;
+  layout?: 'DEFAULT' | 'SPLIT_PANEL',
   style?: CSSProperties;
 };
 
-export default function NodeREPL({ deps, style }: Props) {
+export default function NodeREPL({ deps, code, setupCode, style }: Props) {
   const runProcessRef = useRef<WebContainerProcess | null>(null);
   const { webContainer, wcStatus, wcSetup, terminalRef, editorRef } =
     useAppState((s) => s);
 
   useEffect(() => {
-    if (wcStatus === "Ready" && !wcSetup) {
+    if (wcStatus === WC_STATUS.READY && !wcSetup) {
       installPkgs();
     }
   }, [wcStatus, wcSetup]);
 
   const installPkgs = async () => {
     setAppState({ wcStatus: WC_STATUS.INSTALLING as WcStatus });
-    const pkgFile = JSON.parse(files["package.json"].file.contents);
-    pkgFile.dependencies = getDeps(deps);
-    files["package.json"].file.contents = JSON.stringify(pkgFile);
-    if (webContainer) {
-      await webContainer.mount(files);
+    files["setup.js"].file.contents = setupCode || "";
+    files["main.js"].file.contents = code || "";
+    if (deps) {
+      const pkgFile = JSON.parse(files["package.json"].file.contents);
+      pkgFile.dependencies = getDeps(deps);
+      files["package.json"].file.contents = JSON.stringify(pkgFile);
+    }
+    if (webContainer.current) {
+      await webContainer.current.mount(files);
     }
     await runCmd("npm", ["install"]);
     setAppState({ wcStatus: WC_STATUS.READY as WcStatus, wcSetup: true });
@@ -40,8 +47,8 @@ export default function NodeREPL({ deps, style }: Props) {
   const runCmd = async (prog: string, args: string[]) => {
     terminalRef.current?.writeln("");
 
-    if (webContainer && terminalRef) {
-      runProcessRef.current = await webContainer.spawn(prog, [...args]);
+    if (webContainer.current && terminalRef) {
+      runProcessRef.current = await webContainer.current.spawn(prog, [...args]);
       runProcessRef.current.output.pipeTo(
         new WritableStream({
           write(data) {
@@ -63,13 +70,13 @@ export default function NodeREPL({ deps, style }: Props) {
   };
 
   async function writeFile(path: string, content: string) {
-    if (webContainer) {
-      await webContainer.fs.writeFile(path, content);
+    if (webContainer.current) {
+      await webContainer.current.fs.writeFile(path, content);
     }
   }
 
   const handleRun = async () => {
-    if (editorRef.current && webContainer) {
+    if (editorRef.current && webContainer.current) {
       setAppState((s) => ({ ...s, wcStatus: WC_STATUS.RUNNING as WcStatus }));
       const doc = editorRef.current?.state.doc.toString();
       await writeFile(NODE_MAIN_FILE, doc);
@@ -82,13 +89,13 @@ export default function NodeREPL({ deps, style }: Props) {
     if (terminalRef) {
       terminalRef.current?.clear();
     }
-    setAppState({ logs: [], userCmd: "" });
+    setAppState({ logs: [] });
   };
 
   return (
     <div style={style}>
       <SplitPanel
-        left={<Editor />}
+        left={<Editor onRun={handleRun} />}
         right={
           <LogsContainer
             onStop={handleStop}

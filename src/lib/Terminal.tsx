@@ -1,8 +1,8 @@
 import { CSSProperties, MutableRefObject, useEffect, useRef } from "react";
-import { Terminal as XTerminal } from "xterm";
+import { IDisposable, Terminal as XTerminal } from "xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import { setAppState, useAppState } from "./store";
-import { BACKSPACE_CODE } from "./constants";
+import { BACKSPACE_CODE, WC_STATUS } from "./constants";
 
 type Props = {
   style: CSSProperties;
@@ -34,14 +34,16 @@ function handleKey(
 export default function Terminal({ style, runCmd }: Props) {
   const userCmdRef = useRef<string>("");
   const terminalContRef = useRef(null);
-  const { terminalRef, webContainer } = useAppState((s) => ({
+  const { terminalRef, wcStatus, wcSetup } = useAppState((s) => ({
     terminalRef: s.terminalRef,
-    webContainer: s.webContainer,
+    wcSetup: s.wcSetup,
+    wcStatus: s.wcStatus,
   }));
 
   useEffect(() => {
-    if (webContainer && terminalRef.current) {
-      terminalRef.current.onKey(
+    let onKeyHandler: IDisposable, onDataHandler: IDisposable;
+    if (wcSetup && wcStatus === WC_STATUS.READY && terminalRef.current) {
+      onKeyHandler = terminalRef.current.onKey(
         async ({ key }: { key: string; domEvent: KeyboardEvent }) => {
           if (key.charCodeAt(0) === 13) {
             const [prog, ...args] = userCmdRef.current.split(" ");
@@ -50,12 +52,19 @@ export default function Terminal({ style, runCmd }: Props) {
           }
         }
       );
-      terminalRef.current.onData((data: string) => {
+      onDataHandler = terminalRef.current.onData((data: string) => {
         terminalRef.current?.write(data);
         userCmdRef.current += data;
       });
     }
-  }, [webContainer, terminalRef.current]);
+
+    return () => {
+      if (onKeyHandler && onDataHandler) {
+        onDataHandler.dispose();
+        onKeyHandler.dispose();
+      }
+    };
+  }, [wcSetup, wcStatus, terminalRef.current]);
 
   useEffect(() => {
     if (terminalContRef.current && terminalRef.current === null) {
