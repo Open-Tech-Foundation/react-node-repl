@@ -7,7 +7,7 @@ import getDeps from "./utils/getDeps";
 import { setAppState, useAppState } from "./store";
 import { WebContainerProcess } from "@webcontainer/api";
 import { NODE_INDEX_FILE, NODE_MAIN_FILE, WC_STATUS } from "./constants";
-import { WcStatus } from "./types";
+import { sleep } from "@opentf/utils";
 
 export type Props = {
   code?: string;
@@ -32,13 +32,13 @@ export default function NodeREPL({
   };
 
   useEffect(() => {
-    if (wcStatus === WC_STATUS.READY && !wcSetup) {
+    if (wcStatus === WC_STATUS.STARTED && !wcSetup) {
       installPkgs();
     }
   }, [wcStatus, wcSetup]);
 
   const installPkgs = async () => {
-    setAppState({ wcStatus: WC_STATUS.INSTALLING as WcStatus });
+    setAppState({ wcStatus: WC_STATUS.MOUNTING_FILES });
     files["setup.js"].file.contents = setupCode || "";
     files["main.js"].file.contents = code || "";
     if (deps) {
@@ -48,9 +48,12 @@ export default function NodeREPL({
     }
     if (webContainer.current) {
       await webContainer.current.mount(files);
+      setAppState({ wcStatus: WC_STATUS.READY });
+      await sleep(100);
     }
+    setAppState({ wcStatus: WC_STATUS.INSTALLING });
     await runCmd("npm", ["install"]);
-    setAppState({ wcStatus: WC_STATUS.READY as WcStatus, wcSetup: true });
+    setAppState({ wcStatus: WC_STATUS.READY, wcSetup: true });
   };
 
   const runCmd = async (prog: string, args: string[]) => {
@@ -86,11 +89,11 @@ export default function NodeREPL({
 
   const handleRun = async () => {
     if (editorRef.current && webContainer.current) {
-      setAppState((s) => ({ ...s, wcStatus: WC_STATUS.RUNNING as WcStatus }));
+      setAppState((s) => ({ ...s, wcStatus: WC_STATUS.RUNNING }));
       const doc = editorRef.current?.state.doc.toString();
       await writeFile(NODE_MAIN_FILE, doc);
       await runCmd("node", [NODE_INDEX_FILE]);
-      setAppState((s) => ({ ...s, wcStatus: WC_STATUS.READY as WcStatus }));
+      setAppState((s) => ({ ...s, wcStatus: WC_STATUS.READY }));
     }
   };
 

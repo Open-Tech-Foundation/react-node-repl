@@ -16,10 +16,9 @@ type Props = {
 export default function Editor({ onRun }: Props) {
   const [esm, setESM] = useState<boolean>(false);
   const containerRef = useRef(null);
-  const { editorRef, wcStatus, wcSetup, webcontainer } = useAppState((s) => ({
+  const { editorRef, wcStatus, webcontainer } = useAppState((s) => ({
     editorRef: s.editorRef,
     wcStatus: s.wcStatus,
-    wcSetup: s.wcSetup,
     webcontainer: s.webContainer,
   }));
   const handleRun = () => {
@@ -29,7 +28,6 @@ export default function Editor({ onRun }: Props) {
 
   useEffect(() => {
     if (
-      wcSetup &&
       wcStatus === WC_STATUS.READY &&
       containerRef.current &&
       editorRef.current === null
@@ -61,7 +59,7 @@ export default function Editor({ onRun }: Props) {
         parent: containerRef.current,
       });
     }
-  }, [wcStatus, wcSetup]);
+  }, [wcStatus]);
 
   return (
     <div

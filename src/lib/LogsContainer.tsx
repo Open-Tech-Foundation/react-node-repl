@@ -7,6 +7,7 @@ import Console from "./Console";
 import { useAppState } from "./store";
 import StopIcon from "./icons/Stop";
 import SpinnersRingResize from "./icons/SpinnersRingResize";
+import { WC_STATUS } from "./constants";
 
 type Props = {
   onRun: () => void;
@@ -31,7 +32,7 @@ function LogsContainer({ onRun, onClear, onStop, runCmd }: Props) {
       marginRight: "5px",
     };
     switch (wcStatus) {
-      case "Ready":
+      case WC_STATUS.READY:
         return (
           <button
             title="CTRL + Enter"
@@ -40,12 +41,11 @@ function LogsContainer({ onRun, onClear, onStop, runCmd }: Props) {
               backgroundColor: "#3e7a38",
             }}
             onClick={onRun}
-            disabled={wcStatus !== "Ready"}
           >
             <PlayIcon /> <span style={{ marginLeft: "5px" }}>Run</span>
           </button>
         );
-      case "Running":
+      case WC_STATUS.RUNNING:
         return (
           <button
             title="Stop"
@@ -130,7 +130,7 @@ function LogsContainer({ onRun, onClear, onStop, runCmd }: Props) {
         >
           <div
             style={{
-              display: wcStatus === "Booting" ? "flex" : "none",
+              display: wcStatus === WC_STATUS.BOOTING ? "flex" : "none",
               alignItems: "center",
             }}
           >

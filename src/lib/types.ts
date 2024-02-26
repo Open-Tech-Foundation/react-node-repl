@@ -1,1 +1,8 @@
-export type WcStatus = "Unknown" | "Booting" | "Installing" | "Ready" | "Running";
+export type WcStatus =
+  | "unknown"
+  | "booting"
+  | "started"
+  | "mounting-files"
+  | "installing"
+  | "ready"
+  | "running";

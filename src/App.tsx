@@ -63,6 +63,9 @@ const log = console.log;`;
           </Typography>
         </div>
         <div>
+          <Link href="/docs" fontSize="sm" sx={{ mr: 2 }}>
+            Docs
+          </Link>
           <Link
             href="https://github.com/Open-Tech-Foundation/react-node-repl"
             endDecorator={<Launch fontSize="inherit" />}
