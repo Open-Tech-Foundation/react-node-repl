@@ -13,14 +13,23 @@ export type Props = {
   code?: string;
   deps?: string[];
   setupCode?: string;
-  layout?: 'DEFAULT' | 'SPLIT_PANEL',
+  layout?: "DEFAULT" | "SPLIT_PANEL";
   style?: CSSProperties;
 };
 
-export default function NodeREPL({ deps, code, setupCode, style }: Props) {
+export default function NodeREPL({
+  deps,
+  code,
+  setupCode,
+  style,
+  layout,
+}: Props) {
   const runProcessRef = useRef<WebContainerProcess | null>(null);
   const { webContainer, wcStatus, wcSetup, terminalRef, editorRef } =
     useAppState((s) => s);
+  const options = {
+    layout: layout ?? "DEFAULT",
+  };
 
   useEffect(() => {
     if (wcStatus === WC_STATUS.READY && !wcSetup) {
@@ -92,8 +101,22 @@ export default function NodeREPL({ deps, code, setupCode, style }: Props) {
     setAppState({ logs: [] });
   };
 
-  return (
-    <div style={style}>
+  const renderDefaultLayout = () => {
+    return (
+      <>
+        <Editor onRun={handleRun} />
+        <LogsContainer
+          onStop={handleStop}
+          onRun={handleRun}
+          onClear={handleClear}
+          runCmd={runCmd}
+        />
+      </>
+    );
+  };
+
+  const renderSplitLayout = () => {
+    return (
       <SplitPanel
         left={<Editor onRun={handleRun} />}
         right={
@@ -105,6 +128,14 @@ export default function NodeREPL({ deps, code, setupCode, style }: Props) {
           />
         }
       />
+    );
+  };
+
+  return (
+    <div style={style}>
+      {options.layout === "DEFAULT"
+        ? renderDefaultLayout()
+        : renderSplitLayout()}
     </div>
   );
 }

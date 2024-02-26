@@ -1,7 +1,20 @@
-import { Alert, Box, Button, Divider, Link, Typography } from "@mui/joy";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Alert,
+  Box,
+  Button,
+  Divider,
+  Link,
+  Typography,
+} from "@mui/joy";
 import WarningIcon from "@mui/icons-material/Warning";
 import InfoIcon from "@mui/icons-material/Info";
 import Launch from "@mui/icons-material/Launch";
+import VerifiedIcon from "@mui/icons-material/Verified";
+import SyntaxHighlighter from "react-syntax-highlighter";
+import { gruvboxDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 import { NodeREPL } from "./lib";
 
@@ -11,6 +24,17 @@ const REPL_DEPS = [
   "@opentf/cli-styles",
   "@opentf/cli-pbar",
 ];
+
+const demoSource = `import { NodeREPL } from "@opentf/react-node-repl";
+
+<NodeREPL
+  code={code}
+  setupCode={setupCode}
+  deps={['lodash']}
+  style={{ height: "50vh" }}
+  layout="SPLIT_PANEL"
+/>
+`;
 
 function App() {
   const code = `const { style } = require('@opentf/cli-styles')
@@ -78,16 +102,48 @@ const log = console.log;`;
           code={code}
           setupCode={setupCode}
           deps={REPL_DEPS}
-          style={{ height: "calc(50vh)" }}
+          style={{ height: "50vh" }}
+          layout="SPLIT_PANEL"
         />
+        <Box mt={1}>
+          <Accordion>
+            <AccordionSummary
+              variant="outlined"
+              color="primary"
+              sx={{
+                ml: "auto",
+                fontSize: "sm",
+                borderRadius: "5px",
+                fontWeight: "bold",
+              }}
+            >
+              <Box sx={{ px: 1 }}>Expand Code</Box>
+            </AccordionSummary>
+            <AccordionDetails>
+              <SyntaxHighlighter language="javascript" style={gruvboxDark}>
+                {demoSource}
+              </SyntaxHighlighter>
+            </AccordionDetails>
+          </Accordion>
+        </Box>
         <div style={{ marginTop: "25px" }}>
           <Alert
             variant="soft"
             color="warning"
             startDecorator={<WarningIcon />}
           >
-            Currently it does not support importing modules using `import`
-            statements. Fallback to `require`.
+            By default, in REPL mode, you cannot use <strong>import</strong>{" "}
+            statements. Fallback to <strong>require</strong>.
+          </Alert>
+
+          <Alert
+            variant="soft"
+            color="success"
+            sx={{ mt: 2 }}
+            startDecorator={<VerifiedIcon />}
+          >
+            You can run <strong>ESM</strong> modules manually in the terminal
+            with the ESM switch on. Eg: `$ node main.js`
           </Alert>
 
           <Alert
@@ -98,7 +154,14 @@ const log = console.log;`;
           >
             <ul>
               <li>You can directly install npm packages in the terminal.</li>
-              <li>You can use log() instead of console.log().</li>
+              <li>
+                You can use <strong>log()</strong> instead of{" "}
+                <strong>console.log()</strong>.
+              </li>
+              <li>
+                The lodash methods were preloaded, you can use it like{" "}
+                <strong>_.isEmpty(value)</strong>.
+              </li>
             </ul>
           </Alert>
         </div>

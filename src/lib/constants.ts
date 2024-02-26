@@ -12,4 +12,6 @@ export const NODE_MAIN_FILE = "main.js";
 
 export const NODE_INDEX_FILE = "index.js";
 
+export const PACKAGE_JSON_FILE = "package.json";
+
 export const BACKSPACE_CODE = "\b \b";
