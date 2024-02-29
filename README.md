@@ -65,12 +65,16 @@ bun add @opentf/react-node-repl
 ## Usage
 
 ```jsx
-import { NodeREPL } from "@opentf/react-node-repl";
+import { NodeREPL } from '@opentf/react-node-repl';
+import '@opentf/react-node-repl/lib/style.css';
 
-const code = `console.log('Hello World')`;
-const deps = ['pkg1', 'pkg2@1.2.3', 'pkg3@beta'];
+export default function App() {
+  const code = `console.log("Hello World")`;
+  const deps = ['pkg1', 'pkg2@1.2.3', 'pkg3@beta'];
 
-<NodeREPL code={code} deps={deps} />
+  return <NodeREPL code={code} deps={deps} layout='SPLIT_PANEL' />;
+}
+
 ```
 
 ## API

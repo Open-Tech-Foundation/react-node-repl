@@ -14,6 +14,17 @@ import { gruvboxDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import InfoIcon from "@mui/icons-material/Info";
 import { useEffect } from "react";
 
+const usageCode = `import { NodeREPL } from '@opentf/react-node-repl';
+import '@opentf/react-node-repl/lib/style.css';
+
+export default function App() {
+  const code = \`console.log("Hello World")\`;
+  const deps = ['pkg1', 'pkg2@1.2.3', 'pkg3@beta'];
+
+  return <NodeREPL code={code} deps={deps} layout='SPLIT_PANEL' />;
+}
+`
+
 export default function Docs() {
   useEffect(() => {
     window.document.title = "Docs - React Node REPL";
@@ -160,12 +171,7 @@ Cross-Origin-Opener-Policy: same-origin`}
           Usage
         </Typography>
         <SyntaxHighlighter language="javascript" style={gruvboxDark}>
-          {`import { NodeREPL } from "@opentf/react-node-repl";
-
-const code = \`console.log("Hello World")\`;
-const deps = ['pkg1', 'pkg2@1.2.3', 'pkg3@beta'];
-
-<NodeREPL code={code} deps={deps} />`}
+          {usageCode}
         </SyntaxHighlighter>
       </Box>
 
