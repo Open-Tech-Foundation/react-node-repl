@@ -1,5 +1,11 @@
 # @opentf/react-node-repl
 
+## 0.2.0
+
+### Minor Changes
+
+- ecb8cb5: Fixed css exports.
+
 ## 0.1.1
 
 ### Patch Changes
