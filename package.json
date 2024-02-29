@@ -1,8 +1,17 @@
 {
   "name": "@opentf/react-node-repl",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The Node.js REPL in a React component.",
-  "keywords": ["node", "nodejs", "repl", "react", "component", "sandbox", "live", "code"],
+  "keywords": [
+    "node",
+    "nodejs",
+    "repl",
+    "react",
+    "component",
+    "sandbox",
+    "live",
+    "code"
+  ],
   "type": "module",
   "scripts": {
     "dev": "vite --port=3000",
