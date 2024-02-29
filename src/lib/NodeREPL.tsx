@@ -6,7 +6,7 @@ import { files } from "./nodeFiles";
 import getDeps from "./utils/getDeps";
 import { setAppState, useAppState } from "./store";
 import { WebContainerProcess } from "@webcontainer/api";
-import { NODE_INDEX_FILE, NODE_MAIN_FILE, WC_STATUS } from "./constants";
+import { NODE_INDEX_FILE, WC_STATUS } from "./constants";
 import { sleep } from "@opentf/utils";
 
 export type Props = {
@@ -90,8 +90,6 @@ export default function NodeREPL({
   const handleRun = async () => {
     if (editorRef.current && webContainer.current) {
       setAppState((s) => ({ ...s, wcStatus: WC_STATUS.RUNNING }));
-      const doc = editorRef.current?.state.doc.toString();
-      await writeFile(NODE_MAIN_FILE, doc);
       await runCmd("node", [NODE_INDEX_FILE]);
       setAppState((s) => ({ ...s, wcStatus: WC_STATUS.READY }));
     }
@@ -106,22 +104,22 @@ export default function NodeREPL({
 
   const renderDefaultLayout = () => {
     return (
-      <>
-        <Editor onRun={handleRun} />
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <Editor writeFile={writeFile} onRun={handleRun} />
         <LogsContainer
           onStop={handleStop}
           onRun={handleRun}
           onClear={handleClear}
           runCmd={runCmd}
         />
-      </>
+      </div>
     );
   };
 
   const renderSplitLayout = () => {
     return (
       <SplitPanel
-        left={<Editor onRun={handleRun} />}
+        left={<Editor writeFile={writeFile} onRun={handleRun} />}
         right={
           <LogsContainer
             onStop={handleStop}

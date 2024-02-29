@@ -41,6 +41,12 @@ export default function Terminal({ style, runCmd }: Props) {
   }));
 
   useEffect(() => {
+    return () => {
+      terminalRef.current = null;
+    };
+  }, [terminalRef.current]);
+
+  useEffect(() => {
     let onKeyHandler: IDisposable, onDataHandler: IDisposable;
     if (wcSetup && wcStatus === WC_STATUS.READY && terminalRef.current) {
       onKeyHandler = terminalRef.current.onKey(

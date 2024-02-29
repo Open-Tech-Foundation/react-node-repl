@@ -12,13 +12,15 @@
 
 > The Node.js REPL in a React component.
 
-# [Live Demo](https://node-repl.pages.dev/)
+# [Live Demo](https://node-repl.pages.dev/) | [Documentation](https://node-repl.pages.dev/docs)
 
 ## Features
 
 - Simple API
 - Powered by [WebContainer](https://webcontainers.io/)
+- Install npm packages locally, directly in the terminal
 - Switch between `Terminal` or `Console` View
+- Keyboard shortcuts
 - TypeScript support
 
 ## Upcoming
@@ -27,7 +29,20 @@
 - Code formating
 - Syntax errors highlighting
 - TypeScript errors
-- Keyboard shortcuts
+
+## Requirements
+
+- Your site must be served over <strong>HTTPS</strong>.
+- The following headers must be set in your deployed page.
+
+```text
+Cross-Origin-Embedder-Policy: require-corp
+Cross-Origin-Opener-Policy: same-origin
+```
+
+<a href="https://webcontainers.io/guides/configuring-headers">
+Learn more.
+</a>
 
 ## Installation
 
@@ -52,12 +67,27 @@ bun add @opentf/react-node-repl
 ```jsx
 import { NodeREPL } from "@opentf/react-node-repl";
 
-<NodeREPL deps={[]} style={{ height: "50vh" }} />
+const code = `console.log('Hello World')`;
+const deps = ['pkg1', 'pkg2@1.2.3', 'pkg3@beta'];
+
+<NodeREPL code={code} deps={deps} />
 ```
 
 ## API
 
-WIP
+| Prop      | Type     | Required | Default   | Description                                                                                                      |
+| --------- | -------- | -------- | --------- | ---------------------------------------------------------------------------------------------------------------- |
+| code      | string   | No       | ""        | The main code to execute                                                                                         |
+| deps      | string[] | No       | []        | The npm dependencies.Eg: ['lodash', 'chalk@4.1.2']                                                               |
+| setupCode | string   | No       | ""        | The setup code, used to init some values. <br/>Eg: const log = console.log                                       |
+| layout    | string   | No       | "DEFAULT" | The predefined layouts for the components.<br/>There are two types of layout: <br/>1. DEFAULT<br/>2. SPLIT_PANEL |
+
+## Limitations
+
+- Currently, it runs only Node.js v18
+- By default, in REPL mode, you cannot use import statements. You need to fallback to require().
+- You can run ESM modules manually in the terminal with the ESM switch on. Eg: `$ node main.js`
+- It is not possible to run [native addons](https://nodejs.org/api/addons.html).
 
 ## License
 

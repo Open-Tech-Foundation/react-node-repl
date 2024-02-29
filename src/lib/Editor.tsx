@@ -10,10 +10,11 @@ import { Prec } from "@codemirror/state";
 import Switch from "./Switch";
 
 type Props = {
+  writeFile: (path: string, content: string) => Promise<void>;
   onRun: () => void;
 };
 
-export default function Editor({ onRun }: Props) {
+export default function Editor({ writeFile, onRun }: Props) {
   const [esm, setESM] = useState<boolean>(false);
   const containerRef = useRef(null);
   const { editorRef, wcStatus, webcontainer } = useAppState((s) => ({
@@ -21,10 +22,17 @@ export default function Editor({ onRun }: Props) {
     wcStatus: s.wcStatus,
     webcontainer: s.webContainer,
   }));
+
   const handleRun = () => {
     onRun();
     return true;
   };
+
+  useEffect(() => {
+    return () => {
+      editorRef.current = null;
+    };
+  }, []);
 
   useEffect(() => {
     if (
@@ -49,10 +57,7 @@ export default function Editor({ onRun }: Props) {
           javascript(),
           EditorView.updateListener.of(async (update: ViewUpdate) => {
             if (update.docChanged && webcontainer.current) {
-              await webcontainer.current.fs.writeFile(
-                NODE_MAIN_FILE,
-                update.state.doc.toString()
-              );
+              await writeFile(NODE_MAIN_FILE, update.state.doc.toString());
             }
           }),
         ],

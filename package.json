@@ -1,15 +1,33 @@
 {
-  "name": "react-node-repl",
-  "private": true,
+  "name": "@opentf/react-node-repl",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite --port=3000",
-    "build": "tsc && vite build",
+    "build": "vite build",
+    "build:lib": "tsc && vite build --config vite.config.lib.ts --outDir lib",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "type-check": "tsc"
+    "type-check": "tsc",
+    "publish-packages": "pnpm run build:lib && changeset version && changeset publish"
   },
+  "files": [
+    "lib"
+  ],
+  "main": "./lib/index.js",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    "import": "./lib/index.js"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": "git@github.com:Open-Tech-Foundation/react-node-repl.git",
+  "homepage": "https://node-repl.pages.dev",
+  "author": "Thanga Ganapathy",
+  "license": "MIT",
   "dependencies": {
     "@codemirror/commands": "^6.3.3",
     "@codemirror/lang-javascript": "^6.2.1",
@@ -25,6 +43,7 @@
     "xterm": "5.4.0-beta.37"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.27.1",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@fontsource/inter": "^5.0.16",
@@ -40,9 +59,11 @@
     "eslint-plugin-react-refresh": "^0.4.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^6.22.1",
     "react-syntax-highlighter": "^15.5.0",
     "typescript": "^5.2.2",
-    "vite": "^5.1.0"
+    "vite": "^5.1.0",
+    "vite-plugin-dts": "^3.7.3"
   },
   "peerDependencies": {
     "react": "^18.2.0",
