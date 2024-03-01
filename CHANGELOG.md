@@ -1,5 +1,11 @@
 # @opentf/react-node-repl
 
+## 0.3.0
+
+### Minor Changes
+
+- 8201bf9: Added jsh shell process to the terminal.
+
 ## 0.2.0
 
 ### Minor Changes
