@@ -13,10 +13,9 @@ type Props = {
   onRun: () => void;
   onStop: () => void;
   onClear: () => void;
-  runCmd: (p: string, args: string[]) => Promise<void>;
 };
 
-function LogsContainer({ onRun, onClear, onStop, runCmd }: Props) {
+function LogsContainer({ onRun, onClear, onStop }: Props) {
   const [logView, setLogView] = useState("terminal");
   const wcStatus = useAppState((s) => s.wcStatus);
 
@@ -114,7 +113,6 @@ function LogsContainer({ onRun, onClear, onStop, runCmd }: Props) {
       </div>
       <div style={{ height: "calc(100% - 35px)", position: "relative" }}>
         <Terminal
-          runCmd={runCmd}
           style={{
             display: `${logView === "terminal" ? "block" : "none"}`,
           }}

@@ -3,10 +3,9 @@ import { ViewUpdate, keymap } from "@codemirror/view";
 import { indentWithTab } from "@codemirror/commands";
 import { javascript } from "@codemirror/lang-javascript";
 import { useEffect, useRef, useState } from "react";
-import { files } from "./nodeFiles";
-import { useAppState } from "./store";
+import { setAppState, useAppState } from "./store";
 import { NODE_MAIN_FILE, PACKAGE_JSON_FILE, WC_STATUS } from "./constants";
-import { Prec } from "@codemirror/state";
+import { Prec, StateEffect } from "@codemirror/state";
 import Switch from "./Switch";
 
 type Props = {
@@ -17,42 +16,26 @@ type Props = {
 export default function Editor({ writeFile, onRun }: Props) {
   const [esm, setESM] = useState<boolean>(false);
   const containerRef = useRef(null);
-  const { editorRef, wcStatus, webcontainer } = useAppState((s) => ({
-    editorRef: s.editorRef,
-    wcStatus: s.wcStatus,
-    webcontainer: s.webContainer,
-  }));
+  const { editorRef, wcStatus, webcontainer, wcSetup } = useAppState(
+    (s) => ({
+      editorRef: s.editorRef,
+      wcStatus: s.wcStatus,
+      webcontainer: s.webContainer,
+      wcSetup: s.wcSetup,
+    }),
+    { shallow: true }
+  );
 
-  const handleRun = () => {
-    onRun();
-    return true;
-  };
-
-  useEffect(() => {
-    return () => {
-      editorRef.current = null;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (
-      wcStatus === WC_STATUS.READY &&
-      containerRef.current &&
-      editorRef.current === null
-    ) {
-      const runCmdExt = Prec.highest(
-        keymap.of([
-          {
-            key: "Ctrl-Enter",
-            run: handleRun,
-          },
-        ])
+  const init = async () => {
+    if (containerRef.current) {
+      const content = await webcontainer.current?.fs.readFile(
+        NODE_MAIN_FILE,
+        "utf-8"
       );
-      editorRef.current = new EditorView({
-        doc: files[NODE_MAIN_FILE].file.contents,
+      const editor = new EditorView({
+        doc: content,
         extensions: [
           basicSetup,
-          runCmdExt,
           keymap.of([indentWithTab]),
           javascript(),
           EditorView.updateListener.of(async (update: ViewUpdate) => {
@@ -63,8 +46,44 @@ export default function Editor({ writeFile, onRun }: Props) {
         ],
         parent: containerRef.current,
       });
+
+      setAppState({ editorRef: { current: editor } });
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      editorRef.current?.destroy();
+      editorRef.current = null;
+    };
+  }, [editorRef.current]);
+
+  useEffect(() => {
+    if (wcStatus === WC_STATUS.READY && editorRef.current === null) {
+      init();
     }
   }, [wcStatus]);
+
+  useEffect(() => {
+    if (wcSetup && wcStatus === WC_STATUS.READY && editorRef.current) {
+      const runCmdExt = Prec.highest(
+        keymap.of([
+          {
+            key: "Ctrl-Enter",
+            run: () => {
+              onRun();
+              return true;
+            },
+          },
+        ])
+      );
+
+      const trans = editorRef.current.state.update({
+        effects: [StateEffect.appendConfig.of(runCmdExt)],
+      });
+      editorRef.current.dispatch(trans);
+    }
+  }, [editorRef.current, onRun, wcSetup, wcStatus]);
 
   return (
     <div

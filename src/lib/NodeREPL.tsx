@@ -8,6 +8,7 @@ import { setAppState, useAppState } from "./store";
 import { WebContainerProcess } from "@webcontainer/api";
 import { NODE_INDEX_FILE, WC_STATUS } from "./constants";
 import { sleep } from "@opentf/utils";
+import { IDisposable } from "xterm";
 
 export type Props = {
   code?: string;
@@ -24,18 +25,66 @@ export default function NodeREPL({
   style,
   layout,
 }: Props) {
+  const dispOjbRef = useRef<IDisposable | null>(null);
   const runProcessRef = useRef<WebContainerProcess | null>(null);
-  const { webContainer, wcStatus, wcSetup, terminalRef, editorRef } =
+  const { webContainer, wcStatus, wcSetup, terminalRef, shellProcessRef } =
     useAppState((s) => s);
   const options = {
     layout: layout ?? "DEFAULT",
   };
 
   useEffect(() => {
+    return () => {
+      if (shellProcessRef?.current) {
+        shellProcessRef?.current.kill();
+        shellProcessRef.current = null;
+        dispOjbRef.current?.dispose();
+        dispOjbRef.current = null;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     if (wcStatus === WC_STATUS.STARTED && !wcSetup) {
       installPkgs();
     }
   }, [wcStatus, wcSetup]);
+
+  useEffect(() => {
+    if (
+      wcSetup &&
+      wcStatus === WC_STATUS.READY &&
+      shellProcessRef.current === null &&
+      terminalRef.current
+    ) {
+      startShell();
+    }
+  }, [wcStatus, wcSetup, shellProcessRef.current, terminalRef.current]);
+
+  async function startShell() {
+    if (!terminalRef.current) {
+      return;
+    }
+
+    shellProcessRef.current = (await webContainer.current?.spawn("jsh", {
+      terminal: {
+        cols: terminalRef.current.cols,
+        rows: terminalRef.current.rows,
+      },
+    })) as WebContainerProcess;
+    shellProcessRef.current?.output.pipeTo(
+      new WritableStream({
+        write(data) {
+          terminalRef.current?.write(data);
+        },
+      })
+    );
+
+    const input = shellProcessRef?.current.input.getWriter();
+    dispOjbRef.current = terminalRef.current?.onData((data) => {
+      input?.write(data);
+    });
+  }
 
   const installPkgs = async () => {
     setAppState({ wcStatus: WC_STATUS.MOUNTING_FILES });
@@ -57,6 +106,13 @@ export default function NodeREPL({
   };
 
   const runCmd = async (prog: string, args: string[]) => {
+    if (shellProcessRef?.current) {
+      shellProcessRef?.current.kill();
+      shellProcessRef.current = null;
+      dispOjbRef.current?.dispose();
+      dispOjbRef.current = null;
+    }
+
     terminalRef.current?.writeln("");
 
     if (webContainer.current && terminalRef) {
@@ -70,10 +126,15 @@ export default function NodeREPL({
         })
       );
 
+      const input = runProcessRef?.current.input.getWriter();
+      const disposeObj = terminalRef.current?.onData((data) => {
+        input?.write(data);
+      });
+
       await runProcessRef.current.exit;
       terminalRef.current?.writeln("");
-      terminalRef.current?.write("$ ");
       runProcessRef.current = null;
+      disposeObj?.dispose();
     }
   };
 
@@ -88,7 +149,7 @@ export default function NodeREPL({
   }
 
   const handleRun = async () => {
-    if (editorRef.current && webContainer.current) {
+    if (wcSetup && wcStatus === WC_STATUS.READY) {
       setAppState((s) => ({ ...s, wcStatus: WC_STATUS.RUNNING }));
       await runCmd("node", [NODE_INDEX_FILE]);
       setAppState((s) => ({ ...s, wcStatus: WC_STATUS.READY }));
@@ -110,7 +171,6 @@ export default function NodeREPL({
           onStop={handleStop}
           onRun={handleRun}
           onClear={handleClear}
-          runCmd={runCmd}
         />
       </div>
     );
@@ -125,7 +185,6 @@ export default function NodeREPL({
             onStop={handleStop}
             onRun={handleRun}
             onClear={handleClear}
-            runCmd={runCmd}
           />
         }
       />

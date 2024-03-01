@@ -1,44 +1,22 @@
-import { CSSProperties, MutableRefObject, useEffect, useRef } from "react";
-import { IDisposable, Terminal as XTerminal } from "xterm";
+import { CSSProperties, useEffect, useRef } from "react";
+import { Terminal as XTerminal } from "xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import { setAppState, useAppState } from "./store";
-import { BACKSPACE_CODE, WC_STATUS } from "./constants";
 
 type Props = {
   style: CSSProperties;
-  runCmd: (p: string, args: string[]) => Promise<void>;
 };
 
-function handleKey(
-  ev: KeyboardEvent,
-  term: XTerminal,
-  userCmd: MutableRefObject<string>
-) {
-  if (ev.type === "keydown" && ev.key === "Backspace") {
-    if (userCmd.current.length > 0) {
-      term.write(BACKSPACE_CODE);
-      userCmd.current = userCmd.current.slice(0, -1);
-    }
-    return false;
-  }
-
-  if (ev.type === "keydown" && ev.ctrlKey && ev.key === "l") {
-    term.clear();
-    ev.stopPropagation();
-    ev.preventDefault();
-    return false;
-  }
-  return true;
-}
-
-export default function Terminal({ style, runCmd }: Props) {
-  const userCmdRef = useRef<string>("");
-  const terminalContRef = useRef(null);
-  const { terminalRef, wcStatus, wcSetup } = useAppState((s) => ({
-    terminalRef: s.terminalRef,
-    wcSetup: s.wcSetup,
-    wcStatus: s.wcStatus,
-  }));
+export default function Terminal({ style }: Props) {
+  const fitAddonRef = useRef<FitAddon | null>(null);
+  const terminalContRef = useRef<HTMLDivElement>(null);
+  const { terminalRef, shellProcessRef } = useAppState(
+    (s) => ({
+      terminalRef: s.terminalRef,
+      shellProcessRef: s.shellProcessRef,
+    }),
+    { shallow: true }
+  );
 
   useEffect(() => {
     return () => {
@@ -47,47 +25,40 @@ export default function Terminal({ style, runCmd }: Props) {
   }, [terminalRef.current]);
 
   useEffect(() => {
-    let onKeyHandler: IDisposable, onDataHandler: IDisposable;
-    if (wcSetup && wcStatus === WC_STATUS.READY && terminalRef.current) {
-      onKeyHandler = terminalRef.current.onKey(
-        async ({ key }: { key: string; domEvent: KeyboardEvent }) => {
-          if (key.charCodeAt(0) === 13) {
-            const [prog, ...args] = userCmdRef.current.split(" ");
-            await runCmd(prog, args);
-            userCmdRef.current = "";
-          }
-        }
-      );
-      onDataHandler = terminalRef.current.onData((data: string) => {
-        terminalRef.current?.write(data);
-        userCmdRef.current += data;
-      });
-    }
-
-    return () => {
-      if (onKeyHandler && onDataHandler) {
-        onDataHandler.dispose();
-        onKeyHandler.dispose();
-      }
-    };
-  }, [wcSetup, wcStatus, terminalRef.current]);
-
-  useEffect(() => {
     if (terminalContRef.current && terminalRef.current === null) {
       const terminal = new XTerminal({
         fontSize: 15,
         lineHeight: 1,
       });
-      const fitAddon = new FitAddon();
-      terminal.loadAddon(fitAddon);
+      fitAddonRef.current = new FitAddon();
+      terminal.loadAddon(fitAddonRef.current);
       terminal.open(terminalContRef.current);
-      fitAddon.fit();
-      terminal.attachCustomKeyEventHandler((e) =>
-        handleKey(e, terminal, userCmdRef)
-      );
+      fitAddonRef.current.fit();
       setAppState({ terminalRef: { current: terminal } });
     }
   }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (
+        shellProcessRef.current &&
+        terminalRef.current &&
+        fitAddonRef.current
+      ) {
+        fitAddonRef.current.fit();
+        shellProcessRef.current.resize({
+          cols: terminalRef.current.cols,
+          rows: terminalRef.current.rows,
+        });
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [shellProcessRef.current, terminalRef.current, fitAddonRef.current]);
 
   return (
     <div
