@@ -1,5 +1,11 @@
 # @opentf/react-node-repl
 
+## 0.5.0
+
+### Minor Changes
+
+- bca5bbd: Added missing require in pkg exports.
+
 ## 0.4.0
 
 ### Minor Changes
