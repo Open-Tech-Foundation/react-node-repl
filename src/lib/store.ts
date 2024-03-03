@@ -15,7 +15,7 @@ type State = {
   logs: string[];
 };
 
-const [useAppState, setAppState, api] = create<State>({
+const [useAppState, setAppState] = create<State>({
   webContainer: { current: null },
   shellProcessRef: {current: null},
   wcStatus: WC_STATUS.UNKNOWN,
@@ -23,16 +23,6 @@ const [useAppState, setAppState, api] = create<State>({
   editorRef: { current: null },
   wcSetup: false,
   logs: [],
-});
-
-window.addEventListener("load", async () => {
-  // Call only once
-  api.set({ wcStatus: WC_STATUS.BOOTING });
-  const webContainer = await WebContainer.boot();
-  api.set({
-    webContainer: { current: webContainer },
-    wcStatus: WC_STATUS.STARTED,
-  });
 });
 
 export { useAppState, setAppState };

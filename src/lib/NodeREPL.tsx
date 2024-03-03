@@ -5,7 +5,7 @@ import LogsContainer from "./LogsContainer";
 import { files } from "./nodeFiles";
 import getDeps from "./utils/getDeps";
 import { setAppState, useAppState } from "./store";
-import { WebContainerProcess } from "@webcontainer/api";
+import { WebContainer, WebContainerProcess } from "@webcontainer/api";
 import { NODE_INDEX_FILE, WC_STATUS } from "./constants";
 import { sleep } from "@opentf/utils";
 import { IDisposable } from "xterm";
@@ -32,6 +32,21 @@ export default function NodeREPL({
   const options = {
     layout: layout ?? "DEFAULT",
   };
+
+  const bootWC = async () => {
+    setAppState({ wcStatus: WC_STATUS.BOOTING });
+    const webContainer = await WebContainer.boot();
+    setAppState({
+      webContainer: { current: webContainer },
+      wcStatus: WC_STATUS.STARTED,
+    });
+  };
+
+  useEffect(() => {
+    if (wcStatus === WC_STATUS.UNKNOWN) {
+      bootWC();
+    }
+  }, []);
 
   useEffect(() => {
     return () => {
