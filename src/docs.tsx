@@ -60,7 +60,7 @@ export default function Docs() {
           <li>
             <Typography level="body-md">
               Powered by{" "}
-              <Link href="https://webcontainers.io/">WebContainer</Link>
+              <Link href="https://webcontainers.io/">WebContainers</Link>
             </Typography>
           </li>
           <li>

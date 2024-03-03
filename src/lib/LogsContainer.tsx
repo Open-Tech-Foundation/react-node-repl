@@ -71,6 +71,8 @@ function LogsContainer({ onRun, onClear, onStop }: Props) {
           justifyContent: "space-between",
           alignItems: "center",
           fontFamily: "monospace",
+          boxSizing: 'content-box',
+          fontSize: "14px",
         }}
       >
         <div

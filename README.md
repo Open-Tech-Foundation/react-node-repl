@@ -17,7 +17,7 @@
 ## Features
 
 - Simple API
-- Powered by [WebContainer](https://webcontainers.io/)
+- Powered by [WebContainers](https://webcontainers.io/)
 - Install npm packages locally, directly in the terminal
 - Switch between `Terminal` or `Console` View
 - Keyboard shortcuts

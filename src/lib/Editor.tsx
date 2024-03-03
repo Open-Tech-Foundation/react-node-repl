@@ -102,6 +102,8 @@ export default function Editor({ writeFile, onRun }: Props) {
           justifyContent: "space-between",
           alignItems: "center",
           color: "white",
+          boxSizing: "content-box",
+          fontSize: "14px",
         }}
       >
         <div
