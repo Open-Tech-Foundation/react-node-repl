@@ -45,6 +45,13 @@ export default function NodeREPL(props: Props) {
   }, []);
 
   useEffect(() => {
+    if (wcStatus === WC_STATUS.READY && wcSetup) {
+      mountFiles();
+      setAppState({ logs: [] });
+    }
+  }, []);
+
+  useEffect(() => {
     return () => {
       if (shellProcessRef?.current) {
         shellProcessRef?.current.kill();
@@ -195,6 +202,7 @@ export default function NodeREPL(props: Props) {
     return (
       <div style={{ display: "flex", flexDirection: "column" }}>
         <Editor
+          doc={options.code}
           editorProps={options.editor}
           writeFile={writeFile}
           onRun={handleRun}
@@ -216,6 +224,7 @@ export default function NodeREPL(props: Props) {
       <SplitPanel
         left={
           <Editor
+            doc={options.code}
             editorProps={options.editor}
             writeFile={writeFile}
             onRun={handleRun}

@@ -17,6 +17,7 @@ type Props = {
   onRun: () => void;
   editorProps?: EditorProps;
   style: CSSProperties;
+  doc: string;
 };
 
 const baseStyles: CSSProperties = {
@@ -32,19 +33,19 @@ export default function Editor({
   onRun,
   editorProps,
   style,
+  doc,
 }: Props) {
   const [esm, setESM] = useState<boolean>(false);
   const containerRef = useRef(null);
-  const { editorRef, wcStatus, webcontainer, wcSetup } =
-    useAppState(
-      (s) => ({
-        editorRef: s.editorRef,
-        wcStatus: s.wcStatus,
-        webcontainer: s.webContainer,
-        wcSetup: s.wcSetup,
-      }),
-      { shallow: true }
-    );
+  const { editorRef, wcStatus, webcontainer, wcSetup } = useAppState(
+    (s) => ({
+      editorRef: s.editorRef,
+      wcStatus: s.wcStatus,
+      webcontainer: s.webContainer,
+      wcSetup: s.wcSetup,
+    }),
+    { shallow: true }
+  );
 
   const options = merge(
     { header: true, darkMode: false },
@@ -53,10 +54,6 @@ export default function Editor({
 
   const init = async () => {
     if (containerRef.current) {
-      const content = await webcontainer.current?.fs.readFile(
-        NODE_MAIN_FILE,
-        "utf-8"
-      );
       const runCmdExt = Prec.highest(
         keymap.of([
           {
@@ -69,7 +66,7 @@ export default function Editor({
         ])
       );
       const editor = new EditorView({
-        doc: content,
+        doc,
         extensions: [
           basicSetup,
           keymap.of([indentWithTab]),
@@ -198,7 +195,7 @@ export default function Editor({
   };
 
   return (
-    <div style={merge(baseStyles, style)}>
+    <div style={merge({}, baseStyles, style)}>
       {renderHeader()}
       <div
         style={{
