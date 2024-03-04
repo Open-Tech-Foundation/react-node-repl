@@ -28,6 +28,8 @@ export default function Terminal({ style }: Props) {
   useEffect(() => {
     return () => {
       terminalRef.current = null;
+      shellProcessRef.current?.kill();
+      shellProcessRef.current = null;
     };
   }, [terminalRef.current]);
 

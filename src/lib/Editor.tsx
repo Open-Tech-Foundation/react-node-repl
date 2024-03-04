@@ -5,10 +5,12 @@ import { javascript } from "@codemirror/lang-javascript";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { setAppState, useAppState } from "./store";
 import { NODE_MAIN_FILE, PACKAGE_JSON_FILE, WC_STATUS } from "./constants";
-import { Prec, StateEffect } from "@codemirror/state";
+import { Prec, Compartment } from "@codemirror/state";
 import Switch from "./Switch";
 import { EditorProps } from "./types";
 import merge from "lodash.merge";
+
+const keyAction = new Compartment();
 
 type Props = {
   writeFile: (path: string, content: string) => Promise<void>;
@@ -23,7 +25,6 @@ const baseStyles: CSSProperties = {
   height: "100%",
   boxSizing: "border-box",
   border: "1px solid lightgray",
-  // overflow: "auto",
 };
 
 export default function Editor({
@@ -34,27 +35,38 @@ export default function Editor({
 }: Props) {
   const [esm, setESM] = useState<boolean>(false);
   const containerRef = useRef(null);
-  const { editorRef, wcStatus, webcontainer, wcSetup } = useAppState(
-    (s) => ({
-      editorRef: s.editorRef,
-      wcStatus: s.wcStatus,
-      webcontainer: s.webContainer,
-      wcSetup: s.wcSetup,
-    }),
-    { shallow: true }
-  );
+  const { editorRef, wcStatus, webcontainer, wcSetup } =
+    useAppState(
+      (s) => ({
+        editorRef: s.editorRef,
+        wcStatus: s.wcStatus,
+        webcontainer: s.webContainer,
+        wcSetup: s.wcSetup,
+      }),
+      { shallow: true }
+    );
 
   const options = merge(
     { header: true, darkMode: false },
     editorProps ?? {}
   ) as EditorProps;
-  
 
   const init = async () => {
     if (containerRef.current) {
       const content = await webcontainer.current?.fs.readFile(
         NODE_MAIN_FILE,
         "utf-8"
+      );
+      const runCmdExt = Prec.highest(
+        keymap.of([
+          {
+            key: "Ctrl-Enter",
+            run: () => {
+              onRun();
+              return true;
+            },
+          },
+        ])
       );
       const editor = new EditorView({
         doc: content,
@@ -67,6 +79,7 @@ export default function Editor({
               await writeFile(NODE_MAIN_FILE, update.state.doc.toString());
             }
           }),
+          keyAction.of(runCmdExt),
         ],
         parent: containerRef.current,
       });
@@ -102,10 +115,7 @@ export default function Editor({
         ])
       );
 
-      const trans = editorRef.current.state.update({
-        effects: [StateEffect.appendConfig.of(runCmdExt)],
-      });
-      editorRef.current.dispatch(trans);
+      editorRef.current.dispatch({ effects: keyAction.reconfigure(runCmdExt) });
     }
   }, [editorRef.current, onRun, wcSetup, wcStatus]);
 

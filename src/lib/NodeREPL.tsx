@@ -68,6 +68,10 @@ export default function NodeREPL(props: Props) {
       shellProcessRef.current === null &&
       terminalRef.current
     ) {
+      if (dispOjbRef.current) {
+        dispOjbRef.current.dispose();
+        dispOjbRef.current = null;
+      }
       startShell();
     }
   }, [wcStatus, wcSetup, shellProcessRef.current, terminalRef.current]);
@@ -126,9 +130,11 @@ export default function NodeREPL(props: Props) {
       dispOjbRef.current = null;
     }
 
-    terminalRef.current?.writeln("");
+    if (terminalRef.current) {
+      terminalRef.current.writeln("");
+    }
 
-    if (webContainer.current && terminalRef) {
+    if (webContainer.current) {
       runProcessRef.current = await webContainer.current.spawn(
         prog,
         [...args],
@@ -137,16 +143,21 @@ export default function NodeREPL(props: Props) {
       runProcessRef.current.output.pipeTo(
         new WritableStream({
           write(data) {
-            terminalRef.current?.write(data);
+            if (terminalRef.current) {
+              terminalRef.current.write(data);
+            }
             setAppState((s) => ({ logs: [...s.logs, data] }));
           },
         })
       );
 
-      const input = runProcessRef?.current.input.getWriter();
-      const disposeObj = terminalRef.current?.onData((data) => {
-        input?.write(data);
-      });
+      let disposeObj;
+      if (terminalRef.current) {
+        const input = runProcessRef?.current.input.getWriter();
+        disposeObj = terminalRef.current?.onData((data) => {
+          input?.write(data);
+        });
+      }
 
       await runProcessRef.current.exit;
       terminalRef.current?.writeln("");
