@@ -1,4 +1,4 @@
-import { CSSProperties, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import Editor from "./Editor";
 import SplitPanel from "./SplitPanel";
 import LogsContainer from "./LogsContainer";
@@ -9,29 +9,25 @@ import { WebContainer, WebContainerProcess } from "@webcontainer/api";
 import { NODE_INDEX_FILE, WC_STATUS } from "./constants";
 import { sleep } from "@opentf/utils";
 import { IDisposable } from "xterm";
+import merge from "lodash.merge";
+import { Options, Props } from "./types";
 
-export type Props = {
-  code?: string;
-  deps?: string[];
-  setupCode?: string;
-  layout?: "DEFAULT" | "SPLIT_PANEL";
-  style?: CSSProperties;
-};
-
-export default function NodeREPL({
-  deps,
-  code,
-  setupCode,
-  style,
-  layout,
-}: Props) {
+export default function NodeREPL(props: Props) {
   const dispOjbRef = useRef<IDisposable | null>(null);
   const runProcessRef = useRef<WebContainerProcess | null>(null);
   const { webContainer, wcStatus, wcSetup, terminalRef, shellProcessRef } =
     useAppState((s) => s);
-  const options = {
-    layout: layout ?? "DEFAULT",
+  const defaultOptions: Options = {
+    deps: [],
+    code: "",
+    setupCode: "",
+    style: {},
+    layout: "DEFAULT",
+    editor: { darkMode: false, header: true, style: {} },
+    terminal: { show: true, style: {} },
+    console: { show: true, style: {} },
   };
+  const options = merge({}, defaultOptions, props) as Options;
 
   const bootWC = async () => {
     setAppState({ wcStatus: WC_STATUS.BOOTING });
@@ -101,20 +97,22 @@ export default function NodeREPL({
     });
   }
 
-  const installPkgs = async () => {
+  const mountFiles = async () => {
     setAppState({ wcStatus: WC_STATUS.MOUNTING_FILES });
-    files["setup.js"].file.contents = setupCode || "";
-    files["main.js"].file.contents = code || "";
-    if (deps) {
-      const pkgFile = JSON.parse(files["package.json"].file.contents);
-      pkgFile.dependencies = getDeps(deps);
-      files["package.json"].file.contents = JSON.stringify(pkgFile);
-    }
+    files["setup.js"].file.contents = options.setupCode;
+    files["main.js"].file.contents = options.code;
+    const pkgFile = JSON.parse(files["package.json"].file.contents);
+    pkgFile.dependencies = getDeps(options.deps);
+    files["package.json"].file.contents = JSON.stringify(pkgFile);
     if (webContainer.current) {
       await webContainer.current.mount(files);
       setAppState({ wcStatus: WC_STATUS.READY });
       await sleep(100);
     }
+  };
+
+  const installPkgs = async () => {
+    await mountFiles();
     setAppState({ wcStatus: WC_STATUS.INSTALLING });
     await runCmd("npm", ["install"]);
     setAppState({ wcStatus: WC_STATUS.READY, wcSetup: true });
@@ -181,8 +179,15 @@ export default function NodeREPL({
   const renderDefaultLayout = () => {
     return (
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <Editor writeFile={writeFile} onRun={handleRun} />
+        <Editor
+          editorProps={options.editor}
+          writeFile={writeFile}
+          onRun={handleRun}
+          style={options.editor.style}
+        />
         <LogsContainer
+          consoleProps={options.console}
+          terminalProps={options.terminal}
           onStop={handleStop}
           onRun={handleRun}
           onClear={handleClear}
@@ -194,9 +199,18 @@ export default function NodeREPL({
   const renderSplitLayout = () => {
     return (
       <SplitPanel
-        left={<Editor writeFile={writeFile} onRun={handleRun} />}
+        left={
+          <Editor
+            editorProps={options.editor}
+            writeFile={writeFile}
+            onRun={handleRun}
+            style={options.editor.style}
+          />
+        }
         right={
           <LogsContainer
+            consoleProps={options.console}
+            terminalProps={options.terminal}
             onStop={handleStop}
             onRun={handleRun}
             onClear={handleClear}
@@ -207,7 +221,7 @@ export default function NodeREPL({
   };
 
   return (
-    <div style={style}>
+    <div style={options.style}>
       {options.layout === "DEFAULT"
         ? renderDefaultLayout()
         : renderSplitLayout()}

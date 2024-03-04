@@ -2,9 +2,16 @@ import { CSSProperties, useEffect, useRef } from "react";
 import { Terminal as XTerminal } from "xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import { setAppState, useAppState } from "./store";
+import merge from "lodash.merge";
 
 type Props = {
   style: CSSProperties;
+};
+
+const baseStyles: CSSProperties = {
+  paddingLeft: "8px",
+  backgroundColor: "black",
+  height: "100%",
 };
 
 export default function Terminal({ style }: Props) {
@@ -60,15 +67,5 @@ export default function Terminal({ style }: Props) {
     };
   }, [shellProcessRef.current, terminalRef.current, fitAddonRef.current]);
 
-  return (
-    <div
-      style={{
-        ...style,
-        height: "100%",
-        paddingLeft: "8px",
-        backgroundColor: "black",
-      }}
-      ref={terminalContRef}
-    ></div>
-  );
+  return <div style={merge({}, baseStyles, style)} ref={terminalContRef}></div>;
 }

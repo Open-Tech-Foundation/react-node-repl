@@ -8,14 +8,23 @@ import { useAppState } from "./store";
 import StopIcon from "./icons/Stop";
 import SpinnersRingResize from "./icons/SpinnersRingResize";
 import { WC_STATUS } from "./constants";
+import { ConsoleProps, TerminalProps } from "./types";
 
 type Props = {
   onRun: () => void;
   onStop: () => void;
   onClear: () => void;
+  terminalProps: TerminalProps;
+  consoleProps: ConsoleProps;
 };
 
-function LogsContainer({ onRun, onClear, onStop }: Props) {
+function LogsContainer({
+  onRun,
+  onClear,
+  onStop,
+  terminalProps,
+  consoleProps,
+}: Props) {
   const [logView, setLogView] = useState("terminal");
   const wcStatus = useAppState((s) => s.wcStatus);
 
@@ -60,6 +69,74 @@ function LogsContainer({ onRun, onClear, onStop }: Props) {
     }
   };
 
+  const renderLoading = () => {
+    if (wcStatus === WC_STATUS.BOOTING) {
+      return (
+        <div
+          style={{
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%,-50%)",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <SpinnersRingResize stroke="#2ECC40" />
+            <span style={{ color: "white", marginLeft: "10px" }}>
+              Booting WebContainer
+            </span>
+          </div>
+        </div>
+      );
+    }
+  };
+
+  const renderTerminalOrConsole = () => {
+    if (!terminalProps.show) {
+      return <Console style={consoleProps.style} />;
+    }
+
+    return logView === "terminal" ? (
+      <Terminal style={terminalProps.style} />
+    ) : (
+      <Console style={consoleProps.style} />
+    );
+  };
+
+  const renderSelectOrTitle = () => {
+    const styles = {
+      color: "#FF851B",
+      fontWeight: "bold",
+      backgroundColor: "inherit",
+      marginLeft: "5px",
+    };
+    if (terminalProps.show && consoleProps.show) {
+      return (
+        <select
+          style={styles}
+          onChange={(e) => setLogView(e.target.value)}
+          value={logView}
+        >
+          <option value="terminal">Terminal</option>
+          <option value="console">Console</option>
+        </select>
+      );
+    }
+
+    if (terminalProps.show) {
+      return <span style={styles}>Terminal</span>;
+    }
+
+    if (consoleProps.show) {
+      return <span style={styles}>Console</span>;
+    }
+  };
+
   return (
     <div style={{ height: "100%" }}>
       <div
@@ -71,7 +148,7 @@ function LogsContainer({ onRun, onClear, onStop }: Props) {
           justifyContent: "space-between",
           alignItems: "center",
           fontFamily: "monospace",
-          boxSizing: 'content-box',
+          boxSizing: "content-box",
           fontSize: "14px",
         }}
       >
@@ -83,19 +160,8 @@ function LogsContainer({ onRun, onClear, onStop }: Props) {
           }}
         >
           <TerminalIcon />
-          <select
-            style={{
-              color: "#FF851B",
-              fontWeight: "bold",
-              backgroundColor: "inherit",
-              marginLeft: "5px",
-            }}
-            onChange={(e) => setLogView(e.target.value)}
-            value={logView}
-          >
-            <option value="terminal">Terminal</option>
-            <option value="console">Console</option>
-          </select>
+          {renderSelectOrTitle()}
+
           <button
             title="Clear"
             style={{
@@ -114,32 +180,8 @@ function LogsContainer({ onRun, onClear, onStop }: Props) {
         </div>
       </div>
       <div style={{ height: "calc(100% - 35px)", position: "relative" }}>
-        <Terminal
-          style={{
-            display: `${logView === "terminal" ? "block" : "none"}`,
-          }}
-        />
-        {logView === "console" && <Console />}
-        <div
-          style={{
-            position: "absolute",
-            left: "50%",
-            top: "50%",
-            transform: "translate(-50%,-50%)",
-          }}
-        >
-          <div
-            style={{
-              display: wcStatus === WC_STATUS.BOOTING ? "flex" : "none",
-              alignItems: "center",
-            }}
-          >
-            <SpinnersRingResize stroke="#2ECC40" />
-            <span style={{ color: "white", marginLeft: "10px" }}>
-              Booting WebContainer
-            </span>
-          </div>
-        </div>
+        {renderTerminalOrConsole()}
+        {renderLoading()}
       </div>
     </div>
   );

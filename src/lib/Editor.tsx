@@ -2,18 +2,36 @@ import { EditorView, basicSetup } from "codemirror";
 import { ViewUpdate, keymap } from "@codemirror/view";
 import { indentWithTab } from "@codemirror/commands";
 import { javascript } from "@codemirror/lang-javascript";
-import { useEffect, useRef, useState } from "react";
+import { CSSProperties, useEffect, useRef, useState } from "react";
 import { setAppState, useAppState } from "./store";
 import { NODE_MAIN_FILE, PACKAGE_JSON_FILE, WC_STATUS } from "./constants";
 import { Prec, StateEffect } from "@codemirror/state";
 import Switch from "./Switch";
+import { EditorProps } from "./types";
+import merge from "lodash.merge";
 
 type Props = {
   writeFile: (path: string, content: string) => Promise<void>;
   onRun: () => void;
+  editorProps?: EditorProps;
+  style: CSSProperties;
 };
 
-export default function Editor({ writeFile, onRun }: Props) {
+const baseStyles: CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  height: "100%",
+  boxSizing: "border-box",
+  border: "1px solid lightgray",
+  // overflow: "auto",
+};
+
+export default function Editor({
+  writeFile,
+  onRun,
+  editorProps,
+  style,
+}: Props) {
   const [esm, setESM] = useState<boolean>(false);
   const containerRef = useRef(null);
   const { editorRef, wcStatus, webcontainer, wcSetup } = useAppState(
@@ -25,6 +43,12 @@ export default function Editor({ writeFile, onRun }: Props) {
     }),
     { shallow: true }
   );
+
+  const options = merge(
+    { header: true, darkMode: false },
+    editorProps ?? {}
+  ) as EditorProps;
+  
 
   const init = async () => {
     if (containerRef.current) {
@@ -85,91 +109,92 @@ export default function Editor({ writeFile, onRun }: Props) {
     }
   }, [editorRef.current, onRun, wcSetup, wcStatus]);
 
-  return (
-    <div
-      style={{
-        height: "100%",
-        boxSizing: "border-box",
-        borderRight: "1px solid lightgray",
-      }}
-    >
-      <div
-        style={{
-          backgroundColor: "#151515",
-          padding: "5px",
-          height: "25px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          color: "white",
-          boxSizing: "content-box",
-          fontSize: "14px",
-        }}
-      >
+  const renderHeader = () => {
+    if (options.header) {
+      return (
         <div
           style={{
+            backgroundColor: "#151515",
+            padding: "5px",
+            height: "25px",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            padding: "0 10px",
+            color: "white",
+            boxSizing: "content-box",
+            fontSize: "14px",
           }}
         >
-          <div style={{ display: "flex", gap: "5px" }}>
-            <div
-              style={{
-                backgroundColor: "#ed695e",
-                borderRadius: "9999px",
-                height: ".75rem",
-                width: ".75rem",
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: "0 10px",
+            }}
+          >
+            <div style={{ display: "flex", gap: "5px" }}>
+              <div
+                style={{
+                  backgroundColor: "#ed695e",
+                  borderRadius: "9999px",
+                  height: ".75rem",
+                  width: ".75rem",
+                }}
+              />
+              <div
+                style={{
+                  backgroundColor: "#f4be4f",
+                  borderRadius: "9999px",
+                  height: ".75rem",
+                  width: ".75rem",
+                }}
+              />
+              <div
+                style={{
+                  backgroundColor: "#61c454",
+                  borderRadius: "9999px",
+                  height: ".75rem",
+                  width: ".75rem",
+                }}
+              />
+            </div>
+            <span style={{ marginLeft: "15px" }}>main.js</span>
+          </div>
+          <div style={{ paddingRight: "5px" }}>
+            <Switch
+              label="ESM"
+              onChange={async (e) => {
+                setESM(e.target.checked);
+                if (webcontainer.current) {
+                  const content = await webcontainer.current.fs.readFile(
+                    PACKAGE_JSON_FILE,
+                    "utf-8"
+                  );
+                  const obj = JSON.parse(content);
+                  obj.type = e.target.checked ? "module" : "commonjs";
+                  await webcontainer.current.fs.writeFile(
+                    PACKAGE_JSON_FILE,
+                    JSON.stringify(obj, null, 2)
+                  );
+                }
               }}
-            />
-            <div
-              style={{
-                backgroundColor: "#f4be4f",
-                borderRadius: "9999px",
-                height: ".75rem",
-                width: ".75rem",
-              }}
-            />
-            <div
-              style={{
-                backgroundColor: "#61c454",
-                borderRadius: "9999px",
-                height: ".75rem",
-                width: ".75rem",
-              }}
+              value={esm}
             />
           </div>
-          <span style={{ marginLeft: "15px" }}>main.js</span>
         </div>
-        <div style={{ paddingRight: "5px" }}>
-          <Switch
-            label="ESM"
-            onChange={async (e) => {
-              setESM(e.target.checked);
-              if (webcontainer.current) {
-                const content = await webcontainer.current.fs.readFile(
-                  PACKAGE_JSON_FILE,
-                  "utf-8"
-                );
-                const obj = JSON.parse(content);
-                obj.type = e.target.checked ? "module" : "commonjs";
-                await webcontainer.current.fs.writeFile(
-                  PACKAGE_JSON_FILE,
-                  JSON.stringify(obj, null, 2)
-                );
-              }
-            }}
-            value={esm}
-          />
-        </div>
-      </div>
+      );
+    }
+  };
+
+  return (
+    <div style={merge(baseStyles, style)}>
+      {renderHeader()}
       <div
         style={{
-          border: "1px solid lightgray",
-          height: "calc(100% - 35px)",
-          boxSizing: "border-box",
-          overflowY: "auto",
+          overflow: "auto",
+          flex: "1 1 auto",
+          display: "flex",
         }}
         ref={containerRef}
       />

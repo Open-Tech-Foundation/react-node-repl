@@ -1,5 +1,7 @@
 import stripAnsi from "strip-ansi";
 import { useAppState } from "./store";
+import { CSSProperties } from "react";
+import merge from "lodash.merge";
 
 function isError(str: string) {
   const errPattern = [
@@ -12,13 +14,27 @@ function isError(str: string) {
   return errPattern.some((s) => str.startsWith(s));
 }
 
+const baseStyles = {
+  minHeight: "150px",
+  height: "100%",
+  overflowY: "auto",
+  backgroundColor: "#242424",
+  padding: "10px",
+  boxSizing: "border-box",
+  wordBreak: "break-word",
+};
+
 const baseLogStyles = {
   padding: "3px",
   paddingLeft: "10px",
   borderBottom: "1px solid rgb(44, 44, 44)",
 };
 
-export default function Console() {
+type Props = {
+  style: CSSProperties;
+};
+
+export default function Console({ style }: Props) {
   const logs = useAppState((s) => s.logs);
   const renderErrLog = (txt: string, key: number) => {
     const [line1, ...otherLines] = txt.split("\n");
@@ -63,18 +79,5 @@ export default function Console() {
     });
   };
 
-  return (
-    <div
-      style={{
-        height: "100%",
-        overflowY: "auto",
-        backgroundColor: "#242424",
-        padding: "10px",
-        boxSizing: "border-box",
-        wordBreak: "break-word",
-      }}
-    >
-      {renderLogs()}
-    </div>
-  );
+  return <div style={merge({}, baseStyles, style)}>{renderLogs()}</div>;
 }
