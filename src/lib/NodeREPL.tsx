@@ -114,11 +114,11 @@ export default function NodeREPL(props: Props) {
   const installPkgs = async () => {
     await mountFiles();
     setAppState({ wcStatus: WC_STATUS.INSTALLING });
-    await runCmd("npm", ["install"]);
+    await runCmd("npm", ["install"], false);
     setAppState({ wcStatus: WC_STATUS.READY, wcSetup: true });
   };
 
-  const runCmd = async (prog: string, args: string[]) => {
+  const runCmd = async (prog: string, args: string[], output = true) => {
     if (shellProcessRef?.current) {
       shellProcessRef?.current.kill();
       shellProcessRef.current = null;
@@ -129,7 +129,11 @@ export default function NodeREPL(props: Props) {
     terminalRef.current?.writeln("");
 
     if (webContainer.current && terminalRef) {
-      runProcessRef.current = await webContainer.current.spawn(prog, [...args]);
+      runProcessRef.current = await webContainer.current.spawn(
+        prog,
+        [...args],
+        { output }
+      );
       runProcessRef.current.output.pipeTo(
         new WritableStream({
           write(data) {

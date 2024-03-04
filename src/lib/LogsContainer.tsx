@@ -70,7 +70,7 @@ function LogsContainer({
   };
 
   const renderLoading = () => {
-    if (wcStatus === WC_STATUS.BOOTING) {
+    if (wcStatus === WC_STATUS.BOOTING || wcStatus === WC_STATUS.INSTALLING) {
       return (
         <div
           style={{
@@ -88,7 +88,8 @@ function LogsContainer({
           >
             <SpinnersRingResize stroke="#2ECC40" />
             <span style={{ color: "white", marginLeft: "10px" }}>
-              Booting WebContainer
+              {wcStatus === WC_STATUS.BOOTING && "Booting WebContainer"}
+              {wcStatus === WC_STATUS.INSTALLING && "Installing npm packages"}
             </span>
           </div>
         </div>
@@ -97,15 +98,21 @@ function LogsContainer({
   };
 
   const renderTerminalOrConsole = () => {
-    if (!terminalProps.show) {
+    if (terminalProps.show && consoleProps.show) {
+      return logView === "terminal" ? (
+        <Terminal style={terminalProps.style} />
+      ) : (
+        <Console style={consoleProps.style} />
+      );
+    }
+
+    if (consoleProps.show) {
       return <Console style={consoleProps.style} />;
     }
 
-    return logView === "terminal" ? (
-      <Terminal style={terminalProps.style} />
-    ) : (
-      <Console style={consoleProps.style} />
-    );
+    if (terminalProps.show) {
+      return <Terminal style={terminalProps.style} />;
+    }
   };
 
   const renderSelectOrTitle = () => {
