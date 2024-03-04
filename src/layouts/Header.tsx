@@ -1,7 +1,7 @@
 import Launch from "@mui/icons-material/Launch";
 import { Link } from "react-router-dom";
-import { Box, Link as MUILink, Typography } from "@mui/joy";
-
+import { Box, Chip, Link as MUILink, Typography } from "@mui/joy";
+import pkg from "../../package.json";
 
 export default function Header() {
   return (
@@ -40,6 +40,15 @@ export default function Header() {
         <div>
           <MUILink component={Link} to="/docs" fontSize="sm" sx={{ mr: 2 }}>
             Docs
+          </MUILink>
+          <MUILink
+            href="https://www.npmjs.com/package/@opentf/react-node-repl"
+            fontSize="sm"
+            sx={{ mr: 2 }}
+          >
+            <Chip color="warning" size="md" variant="outlined">
+              v{pkg.version}
+            </Chip>
           </MUILink>
           <MUILink
             href="https://github.com/Open-Tech-Foundation/react-node-repl"
