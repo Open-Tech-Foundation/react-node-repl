@@ -1,5 +1,11 @@
 # @opentf/react-node-repl
 
+## 0.6.0
+
+### Minor Changes
+
+- c793034: Added customization to editor, terminal & console components.
+
 ## 0.5.0
 
 ### Minor Changes
