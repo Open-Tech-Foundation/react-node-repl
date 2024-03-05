@@ -1,5 +1,11 @@
 # @opentf/react-node-repl
 
+## 0.8.0
+
+### Minor Changes
+
+- 9ed3ae4: Fixed editor dark theme not updating.
+
 ## 0.7.0
 
 ### Minor Changes
