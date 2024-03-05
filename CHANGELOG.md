@@ -1,5 +1,11 @@
 # @opentf/react-node-repl
 
+## 0.7.0
+
+### Minor Changes
+
+- 26fd2a0: Added dark mode to editor.
+
 ## 0.6.0
 
 ### Minor Changes
