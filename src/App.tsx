@@ -63,14 +63,17 @@ console={{ style: { minHeight: "150px", maxHeight: "300px" } }}
 const code = `const { style } = require('@opentf/cli-styles')
 
 style(\`$g.bol{Hello World 👋}
-$gr{-> Node.js \${process.version}}\`)`;
+  $gr{-> Node.js \${process.version}}\`)`;
 
 const setupCode = `const _ = require('lodash');
 const log = console.log;`;
 
 const codeConsoleTabCode = `const { groupBy } = require('@opentf/utils');
 
-groupBy([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], (v) => (v % 2 === 0 ? "Even" : "Odd"))
+groupBy(
+  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 
+  (v) => (v % 2 === 0 ? "Even" : "Odd")
+)
 `;
 
 function App() {
@@ -127,6 +130,7 @@ function App() {
               setupCode={setupCode}
               deps={REPL_DEPS}
               style={{ height: "50vh" }}
+              editor={{ darkMode: false }}
               layout="SPLIT_PANEL"
             />
             <Box mt={1}>

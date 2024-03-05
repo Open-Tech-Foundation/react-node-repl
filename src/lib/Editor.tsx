@@ -1,14 +1,15 @@
+import { CSSProperties, useEffect, useRef, useState } from "react";
 import { EditorView, basicSetup } from "codemirror";
 import { ViewUpdate, keymap } from "@codemirror/view";
 import { indentWithTab } from "@codemirror/commands";
 import { javascript } from "@codemirror/lang-javascript";
-import { CSSProperties, useEffect, useRef, useState } from "react";
+import { Prec, Compartment } from "@codemirror/state";
+import merge from "lodash.merge";
+import { monokai } from "@uiw/codemirror-theme-monokai";
 import { setAppState, useAppState } from "./store";
 import { NODE_MAIN_FILE, PACKAGE_JSON_FILE, WC_STATUS } from "./constants";
-import { Prec, Compartment } from "@codemirror/state";
-import Switch from "./Switch";
 import { EditorProps } from "./types";
-import merge from "lodash.merge";
+import Switch from "./Switch";
 
 const keyAction = new Compartment();
 
@@ -65,19 +66,25 @@ export default function Editor({
           },
         ])
       );
+      const extensions = [
+        basicSetup,
+        keymap.of([indentWithTab]),
+        javascript(),
+        EditorView.updateListener.of(async (update: ViewUpdate) => {
+          if (update.docChanged && webcontainer.current) {
+            await writeFile(NODE_MAIN_FILE, update.state.doc.toString());
+          }
+        }),
+        keyAction.of(runCmdExt),
+      ];
+
+      if (editorProps?.darkMode) {
+        extensions.push(monokai);
+      }
+
       const editor = new EditorView({
         doc,
-        extensions: [
-          basicSetup,
-          keymap.of([indentWithTab]),
-          javascript(),
-          EditorView.updateListener.of(async (update: ViewUpdate) => {
-            if (update.docChanged && webcontainer.current) {
-              await writeFile(NODE_MAIN_FILE, update.state.doc.toString());
-            }
-          }),
-          keyAction.of(runCmdExt),
-        ],
+        extensions,
         parent: containerRef.current,
       });
 
