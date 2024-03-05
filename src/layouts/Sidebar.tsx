@@ -1,4 +1,11 @@
-import { Box, List, ListItem, ListItemButton, ListItemContent } from "@mui/joy";
+import {
+  Box,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemContent,
+  Sheet,
+} from "@mui/joy";
 import { useState } from "react";
 
 const sections = [
@@ -50,7 +57,8 @@ export default function Sidebar() {
   };
 
   return (
-    <Box
+    <Sheet
+      variant="plain"
       component="aside"
       sx={{
         alignSelf: "start",
@@ -69,6 +77,6 @@ export default function Sidebar() {
       >
         <List>{renderItems()}</List>
       </Box>
-    </Box>
+    </Sheet>
   );
 }

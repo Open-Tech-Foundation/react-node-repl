@@ -2,7 +2,7 @@ import Sidebar from "./Sidebar";
 import Header from "./Header";
 import { Outlet } from "react-router-dom";
 import Footer from "./Footer";
-import { Box } from "@mui/joy";
+import { Box, Sheet } from "@mui/joy";
 
 export default function DocsLayout() {
   return (
@@ -10,9 +10,9 @@ export default function DocsLayout() {
       <Header />
       <Box sx={{ display: "flex" }}>
         <Sidebar />
-        <Box component="main" sx={{ flexGrow: 1, padding: 5 }}>
+        <Sheet component="main" sx={{ flexGrow: 1, padding: 5 }}>
           <Outlet />
-        </Box>
+        </Sheet>
       </Box>
       <Footer />
     </>

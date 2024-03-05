@@ -12,6 +12,7 @@ import { EditorProps } from "./types";
 import Switch from "./Switch";
 
 const keyAction = new Compartment();
+const themeComp = new Compartment();
 
 type Props = {
   writeFile: (path: string, content: string) => Promise<void>;
@@ -76,11 +77,8 @@ export default function Editor({
           }
         }),
         keyAction.of(runCmdExt),
+        themeComp.of([]),
       ];
-
-      if (editorProps?.darkMode) {
-        extensions.push(monokai);
-      }
 
       const editor = new EditorView({
         doc,
@@ -122,6 +120,14 @@ export default function Editor({
       editorRef.current.dispatch({ effects: keyAction.reconfigure(runCmdExt) });
     }
   }, [editorRef.current, onRun, wcSetup, wcStatus]);
+
+  useEffect(() => {
+    if (editorRef.current) {
+      editorRef.current.dispatch({
+        effects: themeComp.reconfigure(editorProps?.darkMode ? monokai : []),
+      });
+    }
+  }, [editorRef.current, editorProps]);
 
   const renderHeader = () => {
     if (options.header) {

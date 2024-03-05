@@ -7,6 +7,7 @@ import "@fontsource/inter";
 import Docs from "./docs.tsx";
 import DefaultLayout from "./layouts/Default.tsx";
 import DocsLayout from "./layouts/Docs.tsx";
+import { CssVarsProvider } from "@mui/joy";
 
 const router = createBrowserRouter([
   {
@@ -28,5 +29,7 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <RouterProvider router={router} />
+  <CssVarsProvider>
+    <RouterProvider router={router} />
+  </CssVarsProvider>
 );

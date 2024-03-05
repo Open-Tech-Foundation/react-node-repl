@@ -1,7 +1,8 @@
 import Launch from "@mui/icons-material/Launch";
 import { Link, useLocation } from "react-router-dom";
-import { Box, Chip, Link as MUILink, Typography } from "@mui/joy";
+import { Box, Chip, Link as MUILink, Sheet, Typography } from "@mui/joy";
 import pkg from "../../package.json";
+import ColorThemeSwitch from "../components/ColorSchemeSwitch";
 
 export default function Header() {
   const location = useLocation();
@@ -19,7 +20,8 @@ export default function Header() {
         borderBottom: "1px solid lightgrey",
       }}
     >
-      <Box
+      <Sheet
+        variant="plain"
         sx={{
           display: "flex",
           justifyContent: "space-between",
@@ -38,7 +40,7 @@ export default function Header() {
             React Node REPL
           </Typography>
         </div>
-        <div>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
           <MUILink
             component={Link}
             to="/docs"
@@ -50,15 +52,6 @@ export default function Header() {
             Docs
           </MUILink>
           <MUILink
-            href="https://www.npmjs.com/package/@opentf/react-node-repl"
-            fontSize="sm"
-            sx={{ mr: 2 }}
-          >
-            <Chip color="warning" size="md" variant="outlined">
-              v{pkg.version}
-            </Chip>
-          </MUILink>
-          <MUILink
             href="https://github.com/Open-Tech-Foundation/react-node-repl"
             endDecorator={<Launch fontSize="inherit" />}
             target="_blank"
@@ -67,8 +60,18 @@ export default function Header() {
           >
             Github
           </MUILink>
-        </div>
-      </Box>
+          <MUILink
+            href="https://www.npmjs.com/package/@opentf/react-node-repl"
+            fontSize="sm"
+            sx={{ ml: 2 }}
+          >
+            <Chip color="warning" size="md" variant="outlined">
+              v{pkg.version}
+            </Chip>
+          </MUILink>
+          <ColorThemeSwitch />
+        </Box>
+      </Sheet>
     </Box>
   );
 }
