@@ -65,26 +65,53 @@ bun add @opentf/react-node-repl
 ## Usage
 
 ```jsx
-import { NodeREPL } from '@opentf/react-node-repl';
-import '@opentf/react-node-repl/lib/style.css';
+import { NodeREPL } from "@opentf/react-node-repl";
+import "@opentf/react-node-repl/lib/style.css";
 
 export default function App() {
   const code = `console.log("Hello World")`;
-  const deps = ['pkg1', 'pkg2@1.2.3', 'pkg3@beta'];
+  const deps = ["pkg1", "pkg2@1.2.3", "pkg3@beta"];
 
-  return <NodeREPL code={code} deps={deps} layout='SPLIT_PANEL' />;
+  return <NodeREPL code={code} deps={deps} layout="SPLIT_PANEL" />;
 }
-
 ```
 
 ## API
 
-| Prop      | Type     | Required | Default   | Description                                                                                                      |
-| --------- | -------- | -------- | --------- | ---------------------------------------------------------------------------------------------------------------- |
-| code      | string   | No       | ""        | The main code to execute                                                                                         |
-| deps      | string[] | No       | []        | The npm dependencies.Eg: ['lodash', 'chalk@4.1.2']                                                               |
-| setupCode | string   | No       | ""        | The setup code, used to init some values. <br/>Eg: const log = console.log                                       |
-| layout    | string   | No       | "DEFAULT" | The predefined layouts for the components.<br/>There are two types of layout: <br/>1. DEFAULT<br/>2. SPLIT_PANEL |
+### Props
+
+| Prop      | Type                | Required | Default   | Description                                                                                                      |
+| --------- | ------------------- | -------- | --------- | ---------------------------------------------------------------------------------------------------------------- |
+| code      | string              | No       | ""        | The main code to execute                                                                                         |
+| deps      | string[]            | No       | []        | The npm dependencies.Eg: ['lodash', 'chalk@4.1.2']                                                               |
+| setupCode | string              | No       | ""        | The setup code, used to init some values. <br/>Eg: const log = console.log                                       |
+| layout    | string              | No       | "DEFAULT" | The predefined layouts for the components.<br/>There are two types of layout: <br/>1. DEFAULT<br/>2. SPLIT_PANEL |
+| editor    | EditorProps         | No       | undefined | The editor component config.                                                                                     |
+| terminal  | TerminalProps       | No       | undefined | The terminal component config.                                                                                   |
+| console   | ConsoleProps        | No       | undefined | The console component config.                                                                                    |
+| style     | React.CSSProperties | No       | {}        | It is used to style the component container.                                                                     |
+
+### EditorProps
+
+| Prop     | Type                | Required | Default | Description                               |
+| -------- | ------------------- | -------- | ------- | ----------------------------------------- |
+| header   | boolean             | No       | true    | Show / Hide the editor header component.  |
+| darkMode | boolean             | No       | false   | The editor dark mode toggle.              |
+| style    | React.CSSProperties | No       | {}      | It is used to style the editor container. |
+
+### TerminalProps
+
+| Prop  | Type                | Required | Default | Description                                 |
+| ----- | ------------------- | -------- | ------- | ------------------------------------------- |
+| show  | boolean             | No       | true    | Show / Hide the terminal component.         |
+| style | React.CSSProperties | No       | {}      | It is used to style the terminal container. |
+
+### ConsoleProps
+
+| Prop  | Type                | Required | Default | Description                                |
+| ----- | ------------------- | -------- | ------- | ------------------------------------------ |
+| show  | boolean             | No       | true    | Show / Hide the console component.         |
+| style | React.CSSProperties | No       | {}      | It is used to style the console container. |
 
 ## Limitations
 

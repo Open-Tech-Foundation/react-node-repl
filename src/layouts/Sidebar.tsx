@@ -7,18 +7,29 @@ const sections = [
   "Installation",
   "Usage",
   "API",
-  "Limitations"
+  "Limitations",
 ];
 
 export default function Sidebar() {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
+  const handleScroll = (id, i) => {
+    setSelectedIndex(i);
+    const element = document.getElementById(id);
+    const headerOffset = 60;
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: "smooth",
+    });
+  };
+
   const renderItems = () => {
     return sections.map((s, i) => (
       <ListItem
         key={i}
-        component="a"
-        href={`#Section_${s}`}
         sx={{
           textDecoration: "none",
           borderLeft:
@@ -30,7 +41,7 @@ export default function Sidebar() {
         <ListItemButton
           color="primary"
           selected={selectedIndex === i}
-          onClick={() => setSelectedIndex(i)}
+          onClick={() => handleScroll(`Section_${s}`, i)}
         >
           <ListItemContent>{s}</ListItemContent>
         </ListItemButton>

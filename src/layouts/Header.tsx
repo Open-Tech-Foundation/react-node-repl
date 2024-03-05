@@ -1,9 +1,10 @@
 import Launch from "@mui/icons-material/Launch";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Box, Chip, Link as MUILink, Typography } from "@mui/joy";
 import pkg from "../../package.json";
 
 export default function Header() {
+  const location = useLocation();
   return (
     <Box
       component="header"
@@ -38,7 +39,14 @@ export default function Header() {
           </Typography>
         </div>
         <div>
-          <MUILink component={Link} to="/docs" fontSize="sm" sx={{ mr: 2 }}>
+          <MUILink
+            component={Link}
+            to="/docs"
+            fontSize="sm"
+            sx={{ mr: 2 }}
+            underline={location.pathname === "/docs" ? "always" : "hover"}
+            variant={location.pathname === "/docs" ? "soft" : "plain"}
+          >
             Docs
           </MUILink>
           <MUILink

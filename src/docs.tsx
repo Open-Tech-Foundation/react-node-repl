@@ -23,7 +23,7 @@ export default function App() {
 
   return <NodeREPL code={code} deps={deps} layout='SPLIT_PANEL' />;
 }
-`
+`;
 
 export default function Docs() {
   useEffect(() => {
@@ -31,7 +31,7 @@ export default function Docs() {
   }, []);
 
   return (
-    <Box sx={{ boxSizing: "border-box" }}>
+    <Box sx={{ boxSizing: "border-box", pb: "100px" }}>
       <Box>
         <Typography id="Section_Introduction" level="h1">
           React Node REPL
@@ -180,6 +180,10 @@ Cross-Origin-Opener-Policy: same-origin`}
           API
         </Typography>
 
+        <Typography level="body-lg" sx={{ mt: 2 }} color="primary">
+          Props
+        </Typography>
+
         <Table aria-label="basic table">
           <thead>
             <tr>
@@ -196,8 +200,9 @@ Cross-Origin-Opener-Policy: same-origin`}
               <td>string</td>
               <td>No</td>
               <td>""</td>
-              <td>The main code to execute</td>
+              <td>The main code to execute.</td>
             </tr>
+
             <tr>
               <td>deps</td>
               <td>string[]</td>
@@ -208,6 +213,7 @@ Cross-Origin-Opener-Policy: same-origin`}
                 <br /> Eg: ['lodash', 'chalk@4.1.2']
               </td>
             </tr>
+
             <tr>
               <td>setupCode</td>
               <td>string</td>
@@ -221,6 +227,7 @@ Cross-Origin-Opener-Policy: same-origin`}
                 <code>const log = console.log</code>
               </td>
             </tr>
+
             <tr>
               <td>layout</td>
               <td>string</td>
@@ -235,6 +242,145 @@ Cross-Origin-Opener-Policy: same-origin`}
                   <li>SPLIT_PANEL</li>
                 </ol>
               </td>
+            </tr>
+
+            <tr>
+              <td>editor</td>
+              <td>EditorProps</td>
+              <td>No</td>
+              <td>undefined</td>
+              <td>The editor component config.</td>
+            </tr>
+
+            <tr>
+              <td>terminal</td>
+              <td>TerminalProps</td>
+              <td>No</td>
+              <td>undefined</td>
+              <td>The terminal component config.</td>
+            </tr>
+
+            <tr>
+              <td>console</td>
+              <td>ConsoleProps</td>
+              <td>No</td>
+              <td>undefined</td>
+              <td>The console component config.</td>
+            </tr>
+
+            <tr>
+              <td>style</td>
+              <td>React.CSSProperties</td>
+              <td>No</td>
+              <td>{"{}"}</td>
+              <td>It is used to style the component container.</td>
+            </tr>
+          </tbody>
+        </Table>
+
+        <Typography level="body-lg" sx={{ mt: 2 }} color="primary">
+          EditorProps
+        </Typography>
+
+        <Table aria-label="basic table" sx={{ mt: 2 }}>
+          <thead>
+            <tr>
+              <th>Prop</th>
+              <th>Type</th>
+              <th>Required</th>
+              <th>Default</th>
+              <th style={{ width: "40%" }}>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>header</td>
+              <td>boolean</td>
+              <td>No</td>
+              <td>true</td>
+              <td>Show / Hide the editor header component.</td>
+            </tr>
+
+            <tr>
+              <td>darkMode</td>
+              <td>boolean</td>
+              <td>No</td>
+              <td>false</td>
+              <td>The editor dark mode toggle.</td>
+            </tr>
+
+            <tr>
+              <td>style</td>
+              <td>React.CSSProperties</td>
+              <td>No</td>
+              <td>{"{}"}</td>
+              <td>It is used to style the editor container.</td>
+            </tr>
+          </tbody>
+        </Table>
+
+        <Typography level="body-lg" sx={{ mt: 2 }} color="primary">
+          TerminalProps
+        </Typography>
+
+        <Table aria-label="basic table" sx={{ mt: 2 }}>
+          <thead>
+            <tr>
+              <th>Prop</th>
+              <th>Type</th>
+              <th>Required</th>
+              <th>Default</th>
+              <th style={{ width: "40%" }}>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>show</td>
+              <td>boolean</td>
+              <td>No</td>
+              <td>true</td>
+              <td>Show / Hide the terminal component.</td>
+            </tr>
+
+            <tr>
+              <td>style</td>
+              <td>React.CSSProperties</td>
+              <td>No</td>
+              <td>{"{}"}</td>
+              <td>It is used to style the terminal container.</td>
+            </tr>
+          </tbody>
+        </Table>
+
+        <Typography level="body-lg" sx={{ mt: 2 }} color="primary">
+          ConsoleProps
+        </Typography>
+
+        <Table aria-label="basic table" sx={{ mt: 2 }}>
+          <thead>
+            <tr>
+              <th>Prop</th>
+              <th>Type</th>
+              <th>Required</th>
+              <th>Default</th>
+              <th style={{ width: "40%" }}>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>show</td>
+              <td>boolean</td>
+              <td>No</td>
+              <td>true</td>
+              <td>Show / Hide the console component.</td>
+            </tr>
+
+            <tr>
+              <td>style</td>
+              <td>React.CSSProperties</td>
+              <td>No</td>
+              <td>{"{}"}</td>
+              <td>It is used to style the console container.</td>
             </tr>
           </tbody>
         </Table>
