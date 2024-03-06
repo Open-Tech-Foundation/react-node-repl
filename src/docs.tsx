@@ -407,6 +407,24 @@ Cross-Origin-Opener-Policy: same-origin`}
           </li>
         </Typography>
       </Box>
+
+      <Box sx={{ mt: 5 }}>
+        <Typography id="Section_Use Cases" level="h2">
+          Use Cases
+        </Typography>
+        <Typography level="body-md" component="ul" sx={{ mt: 2 }}>
+          <li>Online playgrounds.</li>
+          <li>It can be used in React based documentation sites.</li>
+        </Typography>
+        <Typography level="h4" sx={{ mt: 3 }}>
+          Integrations:
+        </Typography>
+        <ul>
+          <li>
+            <Link href="https://js-utils.pages.dev">JS Utils</Link>
+          </li>
+        </ul>
+      </Box>
     </Box>
   );
 }

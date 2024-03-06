@@ -15,6 +15,7 @@ const sections = [
   "Usage",
   "API",
   "Limitations",
+  "Use Cases"
 ];
 
 export default function Sidebar() {
