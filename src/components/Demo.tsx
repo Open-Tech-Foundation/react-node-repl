@@ -48,7 +48,6 @@ editor={{
 }}
 terminal={{
   show: false,
-  style: { minHeight: "150px", maxHeight: "300px" },
 }}
 console={{ style: { minHeight: "150px", maxHeight: "300px" } }}
 />

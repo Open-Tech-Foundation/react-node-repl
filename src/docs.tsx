@@ -413,7 +413,8 @@ Cross-Origin-Opener-Policy: same-origin`}
           Use Cases
         </Typography>
         <Typography level="body-md" component="ul" sx={{ mt: 2 }}>
-          <li>Online playgrounds.</li>
+          <li>Online Node.js playgrounds.</li>
+          <li>Online coding tutorials.</li>
           <li>It can be used in React based documentation sites.</li>
         </Typography>
         <Typography level="h4" sx={{ mt: 3 }}>
