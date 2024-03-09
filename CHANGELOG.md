@@ -1,5 +1,11 @@
 # @opentf/react-node-repl
 
+## 0.9.0
+
+### Minor Changes
+
+- a6f9e9c: Fixed repl output formatting with node formatWithOptions util.
+
 ## 0.8.0
 
 ### Minor Changes
