@@ -4,22 +4,7 @@ export const files = {
       contents: `'use strict';
 let vm = require('node:vm');
 const {readFileSync} = require('node:fs');
-
-function replacer(key, value) {
-  if (typeof value === "function") {
-    return 'Function';
-  }
-
-  if (typeof value === "bigint") {
-    return \`\${value}n\`;
-  }
-
-  if (typeof value === 'number' && value === Number.POSITIVE_INFINITY) {
-    return 'Infinity';
-  }
-
-  return value;
-}
+const { formatWithOptions } = require('node:util');
 
 global.require = require;
 const setupCode = readFileSync('./setup.js');
@@ -27,18 +12,7 @@ const mainCode = readFileSync('./main.js');
 const code = setupCode + '\\n' + mainCode;
 const result = vm.runInThisContext(code);
 vm = null;
-
-let out; 
-
-if (typeof result === 'string') {
-  out = result
-} else if (typeof result === 'undefined') {
-  out = 'undefined'
-} else {
-  out = JSON.stringify(result, replacer, 2);
-}
-
-process.stdout.write(out);`,
+process.stdout.write(formatWithOptions({ colors: true }, result));`,
     },
   },
   "main.js": {

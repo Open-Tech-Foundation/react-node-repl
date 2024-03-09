@@ -73,7 +73,7 @@ export default function Console({ style }: Props) {
             color: "white",
           }}
         >
-          {txt}
+          <pre>{txt}</pre>
         </div>
       );
     });
