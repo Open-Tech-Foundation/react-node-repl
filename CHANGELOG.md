@@ -1,5 +1,11 @@
 # @opentf/react-node-repl
 
+## 0.10.0
+
+### Minor Changes
+
+- 15d1285: Removed lodash deps.
+
 ## 0.9.0
 
 ### Minor Changes
