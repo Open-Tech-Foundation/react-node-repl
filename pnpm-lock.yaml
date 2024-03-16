@@ -15,29 +15,26 @@ dependencies:
     specifier: ^6.4.1
     version: 6.4.1
   '@codemirror/view':
-    specifier: ^6.24.0
-    version: 6.24.0
+    specifier: ^6.26.0
+    version: 6.26.0
   '@opentf/react-state':
     specifier: ^0.15.0
     version: 0.15.0(react-dom@18.2.0)(react@18.2.0)
   '@opentf/utils':
-    specifier: ^0.27.0
-    version: 0.27.0
+    specifier: ^0.31.0
+    version: 0.31.0
   '@uiw/codemirror-theme-monokai':
     specifier: ^4.21.24
-    version: 4.21.24(@codemirror/language@6.10.1)(@codemirror/state@6.4.1)(@codemirror/view@6.24.0)
+    version: 4.21.24(@codemirror/language@6.10.1)(@codemirror/state@6.4.1)(@codemirror/view@6.26.0)
   '@webcontainer/api':
     specifier: ^1.1.9
     version: 1.1.9
   '@xterm/addon-fit':
-    specifier: 0.9.0-beta.1
-    version: 0.9.0-beta.1(xterm@5.4.0-beta.37)
+    specifier: 0.9.0
+    version: 0.9.0(@xterm/xterm@5.4.0)
   codemirror:
     specifier: ^6.0.1
     version: 6.0.1(@lezer/common@1.2.1)
-  lodash.merge:
-    specifier: ^4.6.2
-    version: 4.6.2
   strip-ansi:
     specifier: ^7.1.0
     version: 7.1.0
@@ -361,7 +358,7 @@ packages:
       prettier: 2.8.8
     dev: true
 
-  /@codemirror/autocomplete@6.12.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.1)(@codemirror/view@6.24.0)(@lezer/common@1.2.1):
+  /@codemirror/autocomplete@6.12.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.1)(@codemirror/view@6.26.0)(@lezer/common@1.2.1):
     resolution: {integrity: sha512-r4IjdYFthwbCQyvqnSlx0WBHRHi8nBvU+WjJxFUij81qsBfhNudf/XKKmmC2j3m0LaOYUQTf3qiEK1J8lO1sdg==}
     peerDependencies:
       '@codemirror/language': ^6.0.0
@@ -371,7 +368,7 @@ packages:
     dependencies:
       '@codemirror/language': 6.10.1
       '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.24.0
+      '@codemirror/view': 6.26.0
       '@lezer/common': 1.2.1
     dev: false
 
@@ -380,18 +377,18 @@ packages:
     dependencies:
       '@codemirror/language': 6.10.1
       '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.24.0
+      '@codemirror/view': 6.26.0
       '@lezer/common': 1.2.1
     dev: false
 
   /@codemirror/lang-javascript@6.2.1:
     resolution: {integrity: sha512-jlFOXTejVyiQCW3EQwvKH0m99bUYIw40oPmFjSX2VS78yzfe0HELZ+NEo9Yfo1MkGRpGlj3Gnu4rdxV1EnAs5A==}
     dependencies:
-      '@codemirror/autocomplete': 6.12.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.1)(@codemirror/view@6.24.0)(@lezer/common@1.2.1)
+      '@codemirror/autocomplete': 6.12.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.1)(@codemirror/view@6.26.0)(@lezer/common@1.2.1)
       '@codemirror/language': 6.10.1
       '@codemirror/lint': 6.5.0
       '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.24.0
+      '@codemirror/view': 6.26.0
       '@lezer/common': 1.2.1
       '@lezer/javascript': 1.4.13
     dev: false
@@ -400,7 +397,7 @@ packages:
     resolution: {integrity: sha512-5GrXzrhq6k+gL5fjkAwt90nYDmjlzTIJV8THnxNFtNKWotMIlzzN+CpqxqwXOECnUdOndmSeWntVrVcv5axWRQ==}
     dependencies:
       '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.24.0
+      '@codemirror/view': 6.26.0
       '@lezer/common': 1.2.1
       '@lezer/highlight': 1.2.0
       '@lezer/lr': 1.4.0
@@ -411,7 +408,7 @@ packages:
     resolution: {integrity: sha512-+5YyicIaaAZKU8K43IQi8TBy6mF6giGeWAH7N96Z5LC30Wm5JMjqxOYIE9mxwMG1NbhT2mA3l9hA4uuKUM3E5g==}
     dependencies:
       '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.24.0
+      '@codemirror/view': 6.26.0
       crelt: 1.0.6
     dev: false
 
@@ -419,7 +416,7 @@ packages:
     resolution: {integrity: sha512-rpMgcsh7o0GuCDUXKPvww+muLA1pDJaFrpq/CCHtpQJYz8xopu4D1hPcKRoDD0YlF8gZaqTNIRa4VRBWyhyy7Q==}
     dependencies:
       '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.24.0
+      '@codemirror/view': 6.26.0
       crelt: 1.0.6
     dev: false
 
@@ -427,8 +424,8 @@ packages:
     resolution: {integrity: sha512-QkEyUiLhsJoZkbumGZlswmAhA7CBU02Wrz7zvH4SrcifbsqwlXShVXg65f3v/ts57W3dqyamEriMhij1Z3Zz4A==}
     dev: false
 
-  /@codemirror/view@6.24.0:
-    resolution: {integrity: sha512-zK6m5pNkdhdJl8idPP1gA4N8JKTiSsOz8U/Iw+C1ChMwyLG7+MLiNXnH/wFuAk6KeGEe33/adOiAh5jMqee03w==}
+  /@codemirror/view@6.26.0:
+    resolution: {integrity: sha512-nSSmzONpqsNzshPOxiKhK203R6BvABepugAe34QfQDbNDslyjkqBuKgrK5ZBvqNXpfxz5iLrlGTmEfhbQyH46A==}
     dependencies:
       '@codemirror/state': 6.4.1
       style-mod: 4.1.0
@@ -1181,6 +1178,10 @@ packages:
     resolution: {integrity: sha512-O9Geu5zQpDZy4aYoe1w3hfCovNrtOoSq7kYfk8Di9XTbchrvcbIzyCyw8+lUZcgHEsOv4pf+jc0soD2CydQd2g==}
     dev: false
 
+  /@opentf/utils@0.31.0:
+    resolution: {integrity: sha512-U75C3d4pMpq26TacaRsDLxCOA38otmQkkB1E8/ZV5QEVs7ediL+lwBU+8QgLy+7f5HniPfwq2CUa3tGXa8Egcg==}
+    dev: false
+
   /@popperjs/core@2.11.8:
     resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
     dev: true
@@ -1676,17 +1677,17 @@ packages:
       eslint-visitor-keys: 3.4.3
     dev: true
 
-  /@uiw/codemirror-theme-monokai@4.21.24(@codemirror/language@6.10.1)(@codemirror/state@6.4.1)(@codemirror/view@6.24.0):
+  /@uiw/codemirror-theme-monokai@4.21.24(@codemirror/language@6.10.1)(@codemirror/state@6.4.1)(@codemirror/view@6.26.0):
     resolution: {integrity: sha512-p4iKNyS6QOSg3SYi/T5CDep3gFaRE3wSw46ryMX5dpOHzd/wzgxHewRSb3NoGtBzfcynZIxVfEdUBTwG3FRtPQ==}
     dependencies:
-      '@uiw/codemirror-themes': 4.21.24(@codemirror/language@6.10.1)(@codemirror/state@6.4.1)(@codemirror/view@6.24.0)
+      '@uiw/codemirror-themes': 4.21.24(@codemirror/language@6.10.1)(@codemirror/state@6.4.1)(@codemirror/view@6.26.0)
     transitivePeerDependencies:
       - '@codemirror/language'
       - '@codemirror/state'
       - '@codemirror/view'
     dev: false
 
-  /@uiw/codemirror-themes@4.21.24(@codemirror/language@6.10.1)(@codemirror/state@6.4.1)(@codemirror/view@6.24.0):
+  /@uiw/codemirror-themes@4.21.24(@codemirror/language@6.10.1)(@codemirror/state@6.4.1)(@codemirror/view@6.26.0):
     resolution: {integrity: sha512-InY24KWP8YArDBACWHKFZ6ZU+WCvRHf3ZB2cCVxMVN35P1ANUmRzpAP2ernZQ5OIriL1/A/kXgD0Zg3Y65PNgg==}
     peerDependencies:
       '@codemirror/language': '>=6.0.0'
@@ -1695,7 +1696,7 @@ packages:
     dependencies:
       '@codemirror/language': 6.10.1
       '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.24.0
+      '@codemirror/view': 6.26.0
     dev: false
 
   /@ungap/structured-clone@1.2.0:
@@ -1777,12 +1778,16 @@ packages:
     resolution: {integrity: sha512-Sp6PV0K9D/3f8fSbCubqhfmBFH8XbngZCBOCF+aExyGqnz2etmw+KYvbQ/JxYvYX5KPaSxM+asFQwoP2RHl5cg==}
     dev: false
 
-  /@xterm/addon-fit@0.9.0-beta.1(xterm@5.4.0-beta.37):
-    resolution: {integrity: sha512-HmGRUMMamUpQYuQBF2VP1LJ0xzqF85LMFfpaNu84t1Tsrl1lPKJWtqX9FDZ22Rf5q6bnKdbj44TRVAUHgDRbLA==}
+  /@xterm/addon-fit@0.9.0(@xterm/xterm@5.4.0):
+    resolution: {integrity: sha512-hDlPPbTVPYyvwXu/asW8HbJkI/2RMi0cMaJnBZYVeJB0SWP2NeESMCNr+I7CvBlyI0sAxpxOg8Wk4OMkxBz9WA==}
     peerDependencies:
-      xterm: ^5.0.0
+      '@xterm/xterm': ^5.0.0
     dependencies:
-      xterm: 5.4.0-beta.37
+      '@xterm/xterm': 5.4.0
+    dev: false
+
+  /@xterm/xterm@5.4.0:
+    resolution: {integrity: sha512-GlyzcZZ7LJjhFevthHtikhiDIl8lnTSgol6eTM4aoSNLcuXu3OEhnbqdCVIjtIil3jjabf3gDtb1S8FGahsuEw==}
     dev: false
 
   /acorn-jsx@5.3.2(acorn@8.11.3):
@@ -2040,13 +2045,13 @@ packages:
   /codemirror@6.0.1(@lezer/common@1.2.1):
     resolution: {integrity: sha512-J8j+nZ+CdWmIeFIGXEFbFPtpiYacFMDR8GlHK3IyHQJMCaVRfGx9NT+Hxivv1ckLWPvNdZqndbr/7lVhrf/Svg==}
     dependencies:
-      '@codemirror/autocomplete': 6.12.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.1)(@codemirror/view@6.24.0)(@lezer/common@1.2.1)
+      '@codemirror/autocomplete': 6.12.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.1)(@codemirror/view@6.26.0)(@lezer/common@1.2.1)
       '@codemirror/commands': 6.3.3
       '@codemirror/language': 6.10.1
       '@codemirror/lint': 6.5.0
       '@codemirror/search': 6.5.6
       '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.24.0
+      '@codemirror/view': 6.26.0
     transitivePeerDependencies:
       - '@lezer/common'
     dev: false
@@ -3188,6 +3193,7 @@ packages:
 
   /lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
+    dev: true
 
   /lodash.startcase@4.4.0:
     resolution: {integrity: sha512-+WKqsK294HMSc2jEbNgpHpd0JfIBhp7rEV4aqXWqFr6AlXov+SlcgB1Fv01y2kGe3Gc8nMW7VA0SrGuSkRfIEg==}

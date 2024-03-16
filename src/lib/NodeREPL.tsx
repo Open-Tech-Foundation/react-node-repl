@@ -9,7 +9,7 @@ import { WebContainer, WebContainerProcess } from "@webcontainer/api";
 import { NODE_INDEX_FILE, WC_STATUS } from "./constants";
 import { sleep } from "@opentf/utils";
 import { IDisposable } from "xterm";
-import merge from "lodash.merge";
+import { merge } from "@opentf/utils";
 import { Options, Props } from "./types";
 
 export default function NodeREPL(props: Props) {

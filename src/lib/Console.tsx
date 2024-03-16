@@ -1,7 +1,7 @@
 import stripAnsi from "strip-ansi";
 import { useAppState } from "./store";
 import { CSSProperties } from "react";
-import merge from "lodash.merge";
+import { merge } from "@opentf/utils";
 
 function isError(str: string) {
   const errPattern = [

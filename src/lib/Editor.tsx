@@ -4,7 +4,7 @@ import { ViewUpdate, keymap } from "@codemirror/view";
 import { indentWithTab } from "@codemirror/commands";
 import { javascript } from "@codemirror/lang-javascript";
 import { Prec, Compartment } from "@codemirror/state";
-import merge from "lodash.merge";
+import { merge } from "@opentf/utils";
 import { monokai } from "@uiw/codemirror-theme-monokai";
 import { setAppState, useAppState } from "./store";
 import { NODE_MAIN_FILE, PACKAGE_JSON_FILE, WC_STATUS } from "./constants";

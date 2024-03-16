@@ -39,17 +39,17 @@ const defaultDemoSource = `<NodeREPL
 `;
 
 const codeConsoleDemoSource = `<NodeREPL
-code={code}
-setupCode={setupCode}
-deps={deps}
-editor={{
-  header: false,
-  style: { minHeight: "150px", maxHeight: "300px" },
-}}
-terminal={{
-  show: false,
-}}
-console={{ style: { minHeight: "150px", maxHeight: "300px" } }}
+  code={code}
+  setupCode={setupCode}
+  deps={deps}
+  editor={{
+    header: false,
+    style: { minHeight: "150px", maxHeight: "300px" },
+  }}
+  terminal={{
+    show: false,
+  }}
+  console={{ style: { minHeight: "150px", maxHeight: "300px" } }}
 />
 `;
 

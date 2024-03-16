@@ -2,7 +2,7 @@ import { CSSProperties, useEffect, useRef } from "react";
 import { Terminal as XTerminal } from "xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import { setAppState, useAppState } from "./store";
-import merge from "lodash.merge";
+import { merge } from "@opentf/utils";
 
 type Props = {
   style: CSSProperties;
