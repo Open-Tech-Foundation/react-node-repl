@@ -12,7 +12,7 @@ const mainCode = readFileSync('./main.js');
 const code = setupCode + '\\n' + mainCode;
 const result = vm.runInThisContext(code);
 vm = null;
-process.stdout.write(formatWithOptions({ colors: true }, result));`,
+process.stdout.write(formatWithOptions({ colors: true, depth: 5 }, result));`,
     },
   },
   "main.js": {
