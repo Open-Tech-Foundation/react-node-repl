@@ -1,5 +1,11 @@
 # @opentf/react-node-repl
 
+## 0.11.0
+
+### Minor Changes
+
+- 0d602bf: Change terminal object printing depth level to 5.
+
 ## 0.10.0
 
 ### Minor Changes
