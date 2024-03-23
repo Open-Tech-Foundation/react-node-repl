@@ -25,7 +25,7 @@ const demoSource = `<NodeREPL
   code={code}
   setupCode={setupCode}
   deps={deps}
-  style={{ height: "50vh" }}
+  style={{ height: "60vh" }}
   layout="SPLIT_PANEL"
 />
 `;
@@ -56,7 +56,8 @@ const codeConsoleDemoSource = `<NodeREPL
 const code = `const { style } = require('@opentf/cli-styles')
 
 style(\`$g.bol{Hello World 👋}
-  $gr{-> Node.js \${process.version}}\`)`;
+  $gr{-> Node.js \${process.version}}\`)
+`;
 
 const setupCode = `const _ = require('lodash');
 const log = console.log;`;
@@ -100,7 +101,7 @@ export default function Demo() {
           code={code}
           setupCode={setupCode}
           deps={REPL_DEPS}
-          style={{ height: "50vh" }}
+          style={{ height: "60vh" }}
           editor={{ darkMode: mode === "dark" }}
           layout="SPLIT_PANEL"
         />

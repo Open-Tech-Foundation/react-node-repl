@@ -33,7 +33,7 @@ function App() {
       <Box sx={{ px: 5 }}>
         <Demo />
       </Box>
-      <div style={{ marginTop: "25px" }}>
+      <div style={{ marginTop: "15px" }}>
         <Alert
           variant="soft"
           color="success"

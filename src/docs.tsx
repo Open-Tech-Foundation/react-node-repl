@@ -422,7 +422,7 @@ Cross-Origin-Opener-Policy: same-origin`}
         </Typography>
         <ul>
           <li>
-            <Link href="https://js-utils.pages.dev">JS Utils</Link>
+            <Link href="https://js-utils.pages.dev">JS Utils - A collection of JavaScript utility functions.</Link>
           </li>
         </ul>
       </Box>

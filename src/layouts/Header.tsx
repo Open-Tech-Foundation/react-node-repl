@@ -43,6 +43,16 @@ export default function Header() {
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <MUILink
             component={Link}
+            to="/"
+            fontSize="sm"
+            sx={{ mr: 2 }}
+            underline={location.pathname === "/" ? "always" : "hover"}
+            variant={location.pathname === "/" ? "soft" : "plain"}
+          >
+            Home
+          </MUILink>
+          <MUILink
+            component={Link}
             to="/docs"
             fontSize="sm"
             sx={{ mr: 2 }}
