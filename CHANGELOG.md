@@ -1,5 +1,11 @@
 # @opentf/react-node-repl
 
+## 0.12.0
+
+### Minor Changes
+
+- dd8e6d3: Changed utils lib to std.
+
 ## 0.11.0
 
 ### Minor Changes
