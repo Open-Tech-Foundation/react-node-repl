@@ -7,9 +7,9 @@ import getDeps from "./utils/getDeps";
 import { setAppState, useAppState } from "./store";
 import { WebContainer, WebContainerProcess } from "@webcontainer/api";
 import { NODE_INDEX_FILE, WC_STATUS } from "./constants";
-import { sleep } from "@opentf/utils";
+import { sleep } from "@opentf/std";
 import { IDisposable } from "xterm";
-import { merge } from "@opentf/utils";
+import { merge } from "@opentf/std";
 import { Options, Props } from "./types";
 
 export default function NodeREPL(props: Props) {

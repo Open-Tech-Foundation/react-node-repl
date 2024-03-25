@@ -53,7 +53,7 @@
     "@codemirror/state": "^6.4.1",
     "@codemirror/view": "^6.26.0",
     "@opentf/react-state": "^0.15.0",
-    "@opentf/utils": "^0.31.0",
+    "@opentf/std": "^0.1.0",
     "@uiw/codemirror-theme-monokai": "^4.21.24",
     "@webcontainer/api": "^1.1.9",
     "@xterm/addon-fit": "0.9.0",

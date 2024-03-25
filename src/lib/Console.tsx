@@ -1,7 +1,7 @@
 import stripAnsi from "strip-ansi";
 import { useAppState } from "./store";
 import { CSSProperties } from "react";
-import { merge } from "@opentf/utils";
+import { merge } from "@opentf/std";
 
 function isError(str: string) {
   const errPattern = [

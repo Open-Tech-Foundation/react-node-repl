@@ -20,9 +20,9 @@ dependencies:
   '@opentf/react-state':
     specifier: ^0.15.0
     version: 0.15.0(react-dom@18.2.0)(react@18.2.0)
-  '@opentf/utils':
-    specifier: ^0.31.0
-    version: 0.31.0
+  '@opentf/std':
+    specifier: ^0.1.0
+    version: 0.1.0
   '@uiw/codemirror-theme-monokai':
     specifier: ^4.21.24
     version: 4.21.24(@codemirror/language@6.10.1)(@codemirror/state@6.4.1)(@codemirror/view@6.26.0)
@@ -1174,12 +1174,12 @@ packages:
       use-sync-external-store: 1.2.0(react@18.2.0)
     dev: false
 
-  /@opentf/utils@0.27.0:
-    resolution: {integrity: sha512-O9Geu5zQpDZy4aYoe1w3hfCovNrtOoSq7kYfk8Di9XTbchrvcbIzyCyw8+lUZcgHEsOv4pf+jc0soD2CydQd2g==}
+  /@opentf/std@0.1.0:
+    resolution: {integrity: sha512-5fCii/IbRRvfjlIRecjLQCneHVMQDCkXtZLaVCHx2MRQU29dq3yZ+x3HZe+eTK9XgXRp/my2FNnTQBc0MmdAVA==}
     dev: false
 
-  /@opentf/utils@0.31.0:
-    resolution: {integrity: sha512-U75C3d4pMpq26TacaRsDLxCOA38otmQkkB1E8/ZV5QEVs7ediL+lwBU+8QgLy+7f5HniPfwq2CUa3tGXa8Egcg==}
+  /@opentf/utils@0.27.0:
+    resolution: {integrity: sha512-O9Geu5zQpDZy4aYoe1w3hfCovNrtOoSq7kYfk8Di9XTbchrvcbIzyCyw8+lUZcgHEsOv4pf+jc0soD2CydQd2g==}
     dev: false
 
   /@popperjs/core@2.11.8:

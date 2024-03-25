@@ -16,7 +16,7 @@ import { useState } from "react";
 
 const REPL_DEPS = [
   "lodash",
-  "@opentf/utils",
+  "@opentf/std",
   "@opentf/cli-styles",
   "@opentf/cli-pbar",
 ];
@@ -62,7 +62,7 @@ style(\`$g.bol{Hello World 👋}
 const setupCode = `const _ = require('lodash');
 const log = console.log;`;
 
-const codeConsoleTabCode = `const { groupBy } = require('@opentf/utils');
+const codeConsoleTabCode = `const { groupBy } = require('@opentf/std');
 
 groupBy(
   [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 
