@@ -1,5 +1,11 @@
 # @opentf/react-node-repl
 
+## 0.12.1
+
+### Patch Changes
+
+- 99868ee: Updated readme.
+
 ## 0.12.0
 
 ### Minor Changes
