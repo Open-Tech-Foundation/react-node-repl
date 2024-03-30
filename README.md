@@ -10,9 +10,13 @@
 
 </div>
 
-> The Node.js REPL in a React component.
+> The Node.js [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop) in a React component.
+
+<div align="center">
 
 # [Live Demo](https://node-repl.pages.dev/) | [Documentation](https://node-repl.pages.dev/docs)
+
+</div>
 
 ## Features
 
@@ -119,6 +123,16 @@ export default function App() {
 - By default, in REPL mode, you cannot use import statements. You need to fallback to require().
 - You can run ESM modules manually in the terminal with the ESM switch on. Eg: `$ node main.js`
 - It is not possible to run [native addons](https://nodejs.org/api/addons.html).
+
+## Related
+
+- [@opentf/react-sandbox](https://github.com/Open-Tech-Foundation/react-sandbox) - The CodeSandbox sandpack wrapper with additional features.
+
+- [@opentf/react-state](https://react-app-state.pages.dev/) - A global state manager for React.
+
+- [@opentf/react-form](https://react-form.pages.dev/) - A simple form state manager for React.
+
+- [@opentf/std](https://js-std.pages.dev/) - An Extensive JavaScript Standard Library.
 
 ## License
 
