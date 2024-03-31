@@ -73,7 +73,7 @@ export default function Console({ style }: Props) {
             color: "white",
           }}
         >
-          <pre>{txt}</pre>
+          <pre style={{ whiteSpace: "pre-line" }}>{txt}</pre>
         </div>
       );
     });
