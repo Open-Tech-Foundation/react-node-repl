@@ -1,5 +1,11 @@
 # @opentf/react-node-repl
 
+## 0.13.0
+
+### Minor Changes
+
+- 32b056a: Fixed console line wraping.
+
 ## 0.12.1
 
 ### Patch Changes
