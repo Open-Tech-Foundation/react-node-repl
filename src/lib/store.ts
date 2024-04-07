@@ -6,21 +6,21 @@ import { WC_STATUS } from "./constants";
 import { EditorView } from "codemirror";
 
 type State = {
-  webContainer: { current: WebContainer | null };
-  shellProcessRef: {current: WebContainerProcess | null}
-  terminalRef: { current: Terminal | null };
-  editorRef: { current: EditorView | null };
+  webContainer: WebContainer | null;
+  shellProcessRef: WebContainerProcess | null;
+  terminalRef: Terminal | null;
+  editorRef: EditorView | null;
   wcStatus: WcStatus;
   wcSetup: boolean;
   logs: string[];
 };
 
-const [useAppState, setAppState] = create<State>({
-  webContainer: { current: null },
-  shellProcessRef: {current: null},
+const { useAppState, setAppState } = create<State>({
+  webContainer: null,
+  shellProcessRef: null,
   wcStatus: WC_STATUS.UNKNOWN,
-  terminalRef: { current: null },
-  editorRef: { current: null },
+  terminalRef: null,
+  editorRef: null,
   wcSetup: false,
   logs: [],
 });

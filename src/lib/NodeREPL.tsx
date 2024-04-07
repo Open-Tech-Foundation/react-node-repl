@@ -33,7 +33,7 @@ export default function NodeREPL(props: Props) {
     setAppState({ wcStatus: WC_STATUS.BOOTING });
     const webContainer = await WebContainer.boot();
     setAppState({
-      webContainer: { current: webContainer },
+      webContainer: webContainer,
       wcStatus: WC_STATUS.STARTED,
     });
   };
@@ -53,11 +53,11 @@ export default function NodeREPL(props: Props) {
 
   useEffect(() => {
     return () => {
-      if (shellProcessRef?.current) {
-        shellProcessRef?.current.kill();
-        shellProcessRef.current = null;
+      if (shellProcessRef) {
+        shellProcessRef.kill();
         dispOjbRef.current?.dispose();
         dispOjbRef.current = null;
+        setAppState({ shellProcessRef: null, terminalRef: null });
       }
     };
   }, []);
@@ -72,8 +72,8 @@ export default function NodeREPL(props: Props) {
     if (
       wcSetup &&
       wcStatus === WC_STATUS.READY &&
-      shellProcessRef.current === null &&
-      terminalRef.current
+      shellProcessRef === null &&
+      terminalRef
     ) {
       if (dispOjbRef.current) {
         dispOjbRef.current.dispose();
@@ -81,29 +81,32 @@ export default function NodeREPL(props: Props) {
       }
       startShell();
     }
-  }, [wcStatus, wcSetup, shellProcessRef.current, terminalRef.current]);
+  }, [wcStatus, wcSetup, shellProcessRef, terminalRef]);
 
   async function startShell() {
-    if (!terminalRef.current) {
+    if (!terminalRef || !webContainer) {
       return;
     }
 
-    shellProcessRef.current = (await webContainer.current?.spawn("jsh", {
+    const shellProcessRef = (await webContainer.spawn("jsh", {
       terminal: {
-        cols: terminalRef.current.cols,
-        rows: terminalRef.current.rows,
+        cols: terminalRef.cols,
+        rows: terminalRef.rows,
       },
     })) as WebContainerProcess;
-    shellProcessRef.current?.output.pipeTo(
+
+    shellProcessRef.output.pipeTo(
       new WritableStream({
         write(data) {
-          terminalRef.current?.write(data);
+          terminalRef.write(data);
         },
       })
     );
 
-    const input = shellProcessRef?.current.input.getWriter();
-    dispOjbRef.current = terminalRef.current?.onData((data) => {
+    setAppState({ shellProcessRef });
+
+    const input = shellProcessRef?.input.getWriter();
+    dispOjbRef.current = terminalRef.onData((data) => {
       input?.write(data);
     });
   }
@@ -115,8 +118,8 @@ export default function NodeREPL(props: Props) {
     const pkgFile = JSON.parse(files["package.json"].file.contents);
     pkgFile.dependencies = getDeps(options.deps);
     files["package.json"].file.contents = JSON.stringify(pkgFile);
-    if (webContainer.current) {
-      await webContainer.current.mount(files);
+    if (webContainer) {
+      await webContainer.mount(files);
       setAppState({ wcStatus: WC_STATUS.READY });
       await sleep(100);
     }
@@ -130,44 +133,44 @@ export default function NodeREPL(props: Props) {
   };
 
   const runCmd = async (prog: string, args: string[], output = true) => {
-    if (shellProcessRef?.current) {
-      shellProcessRef?.current.kill();
-      shellProcessRef.current = null;
+    if (shellProcessRef) {
+      shellProcessRef?.kill();
+      setAppState({ shellProcessRef: null });
       dispOjbRef.current?.dispose();
       dispOjbRef.current = null;
     }
 
-    if (terminalRef.current) {
-      terminalRef.current.writeln("");
+    if (terminalRef) {
+      terminalRef.writeln("");
     }
 
-    if (webContainer.current) {
-      runProcessRef.current = await webContainer.current.spawn(
-        prog,
-        [...args],
-        { output }
-      );
+    if (webContainer) {
+      runProcessRef.current = await webContainer.spawn(prog, [...args], {
+        output,
+      });
       runProcessRef.current.output.pipeTo(
         new WritableStream({
           write(data) {
-            if (terminalRef.current) {
-              terminalRef.current.write(data);
+            if (terminalRef) {
+              terminalRef.write(data);
             }
-            setAppState((s) => ({ logs: [...s.logs, data] }));
+            setAppState((s) => {
+              s.logs.push(data);
+            });
           },
         })
       );
 
       let disposeObj;
-      if (terminalRef.current) {
+      if (terminalRef) {
         const input = runProcessRef?.current.input.getWriter();
-        disposeObj = terminalRef.current?.onData((data) => {
+        disposeObj = terminalRef.onData((data) => {
           input?.write(data);
         });
       }
 
       await runProcessRef.current.exit;
-      terminalRef.current?.writeln("");
+      terminalRef?.writeln("");
       runProcessRef.current = null;
       disposeObj?.dispose();
     }
@@ -178,22 +181,22 @@ export default function NodeREPL(props: Props) {
   };
 
   async function writeFile(path: string, content: string) {
-    if (webContainer.current) {
-      await webContainer.current.fs.writeFile(path, content);
+    if (webContainer) {
+      await webContainer.fs.writeFile(path, content);
     }
   }
 
   const handleRun = async () => {
     if (wcSetup && wcStatus === WC_STATUS.READY) {
-      setAppState((s) => ({ ...s, wcStatus: WC_STATUS.RUNNING }));
+      setAppState({ wcStatus: WC_STATUS.RUNNING });
       await runCmd("node", [NODE_INDEX_FILE]);
-      setAppState((s) => ({ ...s, wcStatus: WC_STATUS.READY }));
+      setAppState({ wcStatus: WC_STATUS.READY });
     }
   };
 
   const handleClear = () => {
     if (terminalRef) {
-      terminalRef.current?.clear();
+      terminalRef.clear();
     }
     setAppState({ logs: [] });
   };

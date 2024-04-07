@@ -39,15 +39,12 @@ export default function Editor({
 }: Props) {
   const [esm, setESM] = useState<boolean>(false);
   const containerRef = useRef(null);
-  const { editorRef, wcStatus, webcontainer, wcSetup } = useAppState(
-    (s) => ({
-      editorRef: s.editorRef,
-      wcStatus: s.wcStatus,
-      webcontainer: s.webContainer,
-      wcSetup: s.wcSetup,
-    }),
-    { shallow: true }
-  );
+  const { editorRef, wcStatus, webcontainer, wcSetup } = useAppState((s) => ({
+    editorRef: s.editorRef,
+    wcStatus: s.wcStatus,
+    webcontainer: s.webContainer,
+    wcSetup: s.wcSetup,
+  }));
 
   const options = merge(
     { header: true, darkMode: false },
@@ -72,7 +69,7 @@ export default function Editor({
         keymap.of([indentWithTab]),
         javascript(),
         EditorView.updateListener.of(async (update: ViewUpdate) => {
-          if (update.docChanged && webcontainer.current) {
+          if (update.docChanged && webcontainer) {
             await writeFile(NODE_MAIN_FILE, update.state.doc.toString());
           }
         }),
@@ -86,25 +83,25 @@ export default function Editor({
         parent: containerRef.current,
       });
 
-      setAppState({ editorRef: { current: editor } });
+      setAppState({ editorRef: editor });
     }
   };
 
   useEffect(() => {
     return () => {
-      editorRef.current?.destroy();
-      editorRef.current = null;
+      editorRef?.destroy();
+      setAppState({ editorRef: null });
     };
-  }, [editorRef.current]);
+  }, []);
 
   useEffect(() => {
-    if (wcStatus === WC_STATUS.READY && editorRef.current === null) {
+    if (wcStatus === WC_STATUS.READY && editorRef === null) {
       init();
     }
   }, [wcStatus]);
 
   useEffect(() => {
-    if (wcSetup && wcStatus === WC_STATUS.READY && editorRef.current) {
+    if (wcSetup && wcStatus === WC_STATUS.READY && editorRef) {
       const runCmdExt = Prec.highest(
         keymap.of([
           {
@@ -117,17 +114,17 @@ export default function Editor({
         ])
       );
 
-      editorRef.current.dispatch({ effects: keyAction.reconfigure(runCmdExt) });
+      editorRef.dispatch({ effects: keyAction.reconfigure(runCmdExt) });
     }
-  }, [editorRef.current, onRun, wcSetup, wcStatus]);
+  }, [editorRef, onRun, wcSetup, wcStatus]);
 
   useEffect(() => {
-    if (editorRef.current) {
-      editorRef.current.dispatch({
+    if (editorRef) {
+      editorRef.dispatch({
         effects: themeComp.reconfigure(editorProps?.darkMode ? monokai : []),
       });
     }
-  }, [editorRef.current, editorProps]);
+  }, [editorRef, editorProps]);
 
   const renderHeader = () => {
     if (options.header) {
@@ -186,14 +183,14 @@ export default function Editor({
               label="ESM"
               onChange={async (e) => {
                 setESM(e.target.checked);
-                if (webcontainer.current) {
-                  const content = await webcontainer.current.fs.readFile(
+                if (webcontainer) {
+                  const content = await webcontainer.fs.readFile(
                     PACKAGE_JSON_FILE,
                     "utf-8"
                   );
                   const obj = JSON.parse(content);
                   obj.type = e.target.checked ? "module" : "commonjs";
-                  await webcontainer.current.fs.writeFile(
+                  await webcontainer.fs.writeFile(
                     PACKAGE_JSON_FILE,
                     JSON.stringify(obj, null, 2)
                   );
