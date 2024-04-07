@@ -1,5 +1,11 @@
 # @opentf/react-node-repl
 
+## 0.14.0
+
+### Minor Changes
+
+- cf9facf: Updated deps.
+
 ## 0.13.0
 
 ### Minor Changes
